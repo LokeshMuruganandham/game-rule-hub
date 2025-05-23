@@ -1,5 +1,5 @@
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { GAMES } from "@/data/games";
@@ -14,59 +14,53 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Search } from "lucide-react";
+import { searchGames, findExactMatch } from "@/lib/search";
 
 const GamesListPage = () => {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState(searchParams.get("search") || "");
   const [playerFilter, setPlayerFilter] = useState<string>("all");
   const [complexityFilter, setComplexityFilter] = useState<string>("all");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
+
+  // Effect to handle URL search parameter
+  useEffect(() => {
+    const searchFromURL = searchParams.get("search");
+    if (searchFromURL) {
+      setSearchQuery(searchFromURL);
+      
+      // Check for exact match
+      const exactMatch = findExactMatch(GAMES, searchFromURL);
+      
+      if (exactMatch) {
+        navigate(`/games/${exactMatch.id}`);
+        return;
+      }
+    }
+  }, [searchParams, navigate]);
+
+  // Update URL when search changes
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setSearchQuery(newValue);
+    if (newValue) {
+      setSearchParams({ search: newValue });
+    } else {
+      setSearchParams({});
+    }
+  };
 
   // Extract all unique categories
   const allCategories = Array.from(
     new Set(GAMES.flatMap((game) => game.categories))
   );
 
-  // Filter games based on search query and filters
-  const filteredGames = GAMES.filter((game) => {
-    // Search filter
-    const matchesSearch = game.title
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
-
-    // Player count filter
-    let matchesPlayerCount = true;
-    if (playerFilter !== "all") {
-      const playerCount = parseInt(game.playerCount.split("-")[0]);
-      
-      switch (playerFilter) {
-        case "1-2":
-          matchesPlayerCount = playerCount <= 2;
-          break;
-        case "3-4":
-          matchesPlayerCount = playerCount >= 3 && playerCount <= 4;
-          break;
-        case "5+":
-          matchesPlayerCount = playerCount >= 5;
-          break;
-        default:
-          matchesPlayerCount = true;
-      }
-    }
-
-    // Complexity filter
-    let matchesComplexity = true;
-    if (complexityFilter !== "all") {
-      const complexity = parseInt(complexityFilter);
-      matchesComplexity = game.complexity === complexity;
-    }
-
-    // Category filter
-    let matchesCategory = true;
-    if (categoryFilter !== "all") {
-      matchesCategory = game.categories.includes(categoryFilter);
-    }
-
-    return matchesSearch && matchesPlayerCount && matchesComplexity && matchesCategory;
+  // Get filtered and searched games using the new search utility
+  const filteredGames = searchGames(GAMES, searchQuery, {
+    playerCount: playerFilter,
+    complexity: complexityFilter,
+    category: categoryFilter,
   });
 
   return (
@@ -87,7 +81,7 @@ const GamesListPage = () => {
                   placeholder="Search games..."
                   className="pl-9"
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={handleSearchChange}
                 />
               </div>
               
