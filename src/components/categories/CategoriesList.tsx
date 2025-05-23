@@ -1,34 +1,7 @@
 
 import React from "react";
-import CategoryCard, { CategoryCardProps } from "./CategoryCard";
-
-// Sample data for categories
-const CATEGORIES: Omit<CategoryCardProps, "icon">[] = [
-  {
-    id: "strategy",
-    name: "Strategy",
-    description: "Games that require careful thought and planning",
-    gameCount: 18,
-  },
-  {
-    id: "family",
-    name: "Family",
-    description: "Fun for all ages, perfect for family game nights",
-    gameCount: 15,
-  },
-  {
-    id: "party",
-    name: "Party Games",
-    description: "Exciting games for larger groups and social gatherings",
-    gameCount: 12,
-  },
-  {
-    id: "card",
-    name: "Card Games",
-    description: "Games played primarily with cards",
-    gameCount: 10,
-  },
-];
+import CategoryCard from "./CategoryCard";
+import { getCategoriesWithGameCount } from "@/data/games";
 
 // Icons mapping for categories
 const CATEGORY_ICONS: Record<string, React.ReactNode> = {
@@ -102,6 +75,8 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
 };
 
 const CategoriesList = () => {
+  const CATEGORIES = getCategoriesWithGameCount();
+
   return (
     <div className="py-8 md:py-12 bg-muted/30">
       <div className="container">

@@ -1,10 +1,21 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const HeroSection = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/games?search=${encodeURIComponent(searchQuery)}`);
+    }
+  };
+
   return (
     <div className="relative overflow-hidden bg-background pt-16 pb-16 md:pt-20 md:pb-24">
       <div className="absolute inset-0 z-0 opacity-10">
@@ -20,15 +31,21 @@ const HeroSection = () => {
           hundreds of popular board games.
         </p>
         <div className="mt-10 flex w-full max-w-md flex-col items-center gap-y-4">
-          <div className="relative w-full">
-            <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Search for a game..."
-              className="pl-10 py-6 text-base"
-            />
-          </div>
-          <Button className="w-full py-6 text-base">Find Game Rules</Button>
+          <form onSubmit={handleSearch} className="w-full">
+            <div className="relative w-full">
+              <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder="Search for a game..."
+                className="pl-10 py-6 text-base"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <Button type="submit" className="w-full mt-2 py-6 text-base">
+              Find Game Rules
+            </Button>
+          </form>
         </div>
       </div>
     </div>

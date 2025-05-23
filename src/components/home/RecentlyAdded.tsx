@@ -3,39 +3,11 @@ import React from "react";
 import GameCard from "../games/GameCard";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-
-// Sample data for recently added games
-const RECENT_GAMES = [
-  {
-    id: "gloomhaven",
-    title: "Gloomhaven",
-    coverImage: "https://images.unsplash.com/photo-1610890716171-6b1bb98ffd09?q=80&w=2071&auto=format&fit=crop",
-    playerCount: "1-4",
-    playTime: "60-120 min",
-    age: "14",
-    complexity: 4,
-  },
-  {
-    id: "codenames",
-    title: "Codenames",
-    coverImage: "https://images.unsplash.com/photo-1606503153804-75ea8a22e75f?q=80&w=2070&auto=format&fit=crop",
-    playerCount: "2-8+",
-    playTime: "15 min",
-    age: "10",
-    complexity: 1,
-  },
-  {
-    id: "wingspan",
-    title: "Wingspan",
-    coverImage: "https://images.unsplash.com/photo-1667734113487-fa438add9462?q=80&w=1992&auto=format&fit=crop",
-    playerCount: "1-5",
-    playTime: "40-70 min",
-    age: "10",
-    complexity: 2,
-  },
-];
+import { getRecentGames } from "@/data/games";
 
 const RecentlyAdded = () => {
+  const RECENT_GAMES = getRecentGames();
+  
   return (
     <div className="py-8 md:py-12">
       <div className="container">
