@@ -17,9 +17,9 @@ import { Search } from "lucide-react";
 
 const GamesListPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [playerFilter, setPlayerFilter] = useState<string>("");
-  const [complexityFilter, setComplexityFilter] = useState<string>("");
-  const [categoryFilter, setCategoryFilter] = useState<string>("");
+  const [playerFilter, setPlayerFilter] = useState<string>("all");
+  const [complexityFilter, setComplexityFilter] = useState<string>("all");
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
 
   // Extract all unique categories
   const allCategories = Array.from(
@@ -35,7 +35,7 @@ const GamesListPage = () => {
 
     // Player count filter
     let matchesPlayerCount = true;
-    if (playerFilter) {
+    if (playerFilter !== "all") {
       const playerCount = parseInt(game.playerCount.split("-")[0]);
       
       switch (playerFilter) {
@@ -55,14 +55,14 @@ const GamesListPage = () => {
 
     // Complexity filter
     let matchesComplexity = true;
-    if (complexityFilter) {
+    if (complexityFilter !== "all") {
       const complexity = parseInt(complexityFilter);
       matchesComplexity = game.complexity === complexity;
     }
 
     // Category filter
     let matchesCategory = true;
-    if (categoryFilter) {
+    if (categoryFilter !== "all") {
       matchesCategory = game.categories.includes(categoryFilter);
     }
 
@@ -102,7 +102,7 @@ const GamesListPage = () => {
                     <SelectValue placeholder="Any players" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Any players</SelectItem>
+                    <SelectItem value="all">Any players</SelectItem>
                     <SelectItem value="1-2">1-2 players</SelectItem>
                     <SelectItem value="3-4">3-4 players</SelectItem>
                     <SelectItem value="5+">5+ players</SelectItem>
@@ -121,7 +121,7 @@ const GamesListPage = () => {
                     <SelectValue placeholder="Any complexity" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Any complexity</SelectItem>
+                    <SelectItem value="all">Any complexity</SelectItem>
                     <SelectItem value="1">1 - Easy</SelectItem>
                     <SelectItem value="2">2 - Moderate</SelectItem>
                     <SelectItem value="3">3 - Medium</SelectItem>
@@ -142,7 +142,7 @@ const GamesListPage = () => {
                     <SelectValue placeholder="All categories" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All categories</SelectItem>
+                    <SelectItem value="all">All categories</SelectItem>
                     {allCategories.map((category) => (
                       <SelectItem key={category} value={category}>
                         {category.charAt(0).toUpperCase() + category.slice(1)}
