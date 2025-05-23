@@ -2,6 +2,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ExternalLink } from "lucide-react";
 
 export interface GameCardProps {
   id: string;
@@ -22,9 +24,15 @@ const GameCard = ({
   age,
   complexity,
 }: GameCardProps) => {
+  // Generate an Amazon affiliate link
+  const getAffiliateLink = (gameTitle: string) => {
+    const formattedTitle = encodeURIComponent(gameTitle);
+    return `https://www.amazon.com/s?k=${formattedTitle}+board+game&tag=boardgameapp-20`;
+  };
+
   return (
-    <Link to={`/games/${id}`}>
-      <Card className="overflow-hidden transition-all hover:shadow-md">
+    <Card className="overflow-hidden transition-all hover:shadow-md flex flex-col">
+      <Link to={`/games/${id}`} className="flex-1">
         <div className="aspect-[4/3] relative overflow-hidden">
           <img
             src={coverImage}
@@ -87,36 +95,47 @@ const GameCard = ({
             </div>
           </div>
         </CardContent>
-        <CardFooter className="p-4 pt-0 justify-between">
-          <div className="flex items-center gap-1">
-            <div className="flex">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <svg
-                  key={i}
-                  className={`h-3 w-3 ${
-                    i < complexity
-                      ? "text-amber-500 fill-current"
-                      : "text-muted-foreground"
-                  }`}
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    fill={i < complexity ? "currentColor" : "none"}
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M12 17.75l-6.172 3.245 1.179-6.873-4.993-4.867 6.9-1.002L12 2l3.086 6.253 6.9 1.002-4.993 4.867 1.179 6.873z"
-                  />
-                </svg>
-              ))}
-            </div>
-            <span className="text-xs text-muted-foreground">Complexity</span>
+      </Link>
+      <CardFooter className="p-4 pt-0 flex justify-between">
+        <div className="flex items-center gap-1">
+          <div className="flex">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <svg
+                key={i}
+                className={`h-3 w-3 ${
+                  i < complexity
+                    ? "text-amber-500 fill-current"
+                    : "text-muted-foreground"
+                }`}
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fill={i < complexity ? "currentColor" : "none"}
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M12 17.75l-6.172 3.245 1.179-6.873-4.993-4.867 6.9-1.002L12 2l3.086 6.253 6.9 1.002-4.993 4.867 1.179 6.873z"
+                />
+              </svg>
+            ))}
           </div>
-        </CardFooter>
-      </Card>
-    </Link>
+          <span className="text-xs text-muted-foreground">Complexity</span>
+        </div>
+        <a
+          href={getAffiliateLink(title)}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(e) => e.stopPropagation()}
+          className="ml-2"
+        >
+          <Button size="sm" variant="secondary" className="text-xs">
+            Buy <ExternalLink className="ml-1 h-3 w-3" />
+          </Button>
+        </a>
+      </CardFooter>
+    </Card>
   );
 };
 

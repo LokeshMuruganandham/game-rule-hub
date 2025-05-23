@@ -8,10 +8,17 @@ import { Separator } from "@/components/ui/separator";
 import { GAMES } from "@/data/games";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import GameCard from "@/components/games/GameCard";
+import { ExternalLink } from "lucide-react";
 
 const GameDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
   const game = GAMES.find((g) => g.id === id);
+
+  // Generate an Amazon affiliate link
+  const getAffiliateLink = (gameTitle: string) => {
+    const formattedTitle = encodeURIComponent(gameTitle);
+    return `https://www.amazon.com/s?k=${formattedTitle}+board+game&tag=boardgameapp-20`;
+  };
 
   // Recommend similar games (games in the same categories)
   const similarGames = game
@@ -64,14 +71,39 @@ const GameDetailsPage = () => {
                 </Link>
               ))}
             </div>
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-2">
-              {game.title}
-            </h1>
+            <div className="flex items-center justify-between">
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-2">
+                {game.title}
+              </h1>
+              <a
+                href={getAffiliateLink(game.title)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden md:block"
+              >
+                <Button className="bg-amber-500 hover:bg-amber-600">
+                  Buy on Amazon <ExternalLink className="ml-2 h-4 w-4" />
+                </Button>
+              </a>
+            </div>
           </div>
         </div>
 
         {/* Game info and rules */}
         <div className="container py-8">
+          <div className="md:hidden mb-6">
+            <a
+              href={getAffiliateLink(game.title)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full"
+            >
+              <Button className="bg-amber-500 hover:bg-amber-600 w-full">
+                Buy on Amazon <ExternalLink className="ml-2 h-4 w-4" />
+              </Button>
+            </a>
+          </div>
+          
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left column - Game details */}
             <div className="lg:col-span-1">
