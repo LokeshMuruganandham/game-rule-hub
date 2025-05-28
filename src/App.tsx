@@ -10,6 +10,7 @@ import GamesListPage from "./pages/GamesListPage";
 import GameDetailsPage from "./pages/GameDetailsPage";
 import CategoriesListPage from "./pages/CategoriesListPage";
 import CategoryPage from "./pages/CategoryPage";
+import ContactPage from "./pages/ContactPage";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/games/:id" element={<GameDetailsPage />} />
           <Route path="/categories" element={<CategoriesListPage />} />
           <Route path="/categories/:id" element={<CategoryPage />} />
+          <Route path="/contact" element={<ContactPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
