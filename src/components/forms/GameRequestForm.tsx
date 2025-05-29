@@ -28,9 +28,7 @@ const formSchema = z.object({
   gameName: z.string().min(2, {
     message: "Game name must be at least 2 characters.",
   }),
-  playerCount: z.string().min(1, {
-    message: "Please specify player count.",
-  }),
+  
   description: z.string().min(10, {
     message: "Description must be at least 10 characters.",
   }),
@@ -50,7 +48,6 @@ const GameRequestForm = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       gameName: "",
-      playerCount: "",
       description: "",
       yourName: "",
       email: "",
@@ -88,19 +85,7 @@ const GameRequestForm = () => {
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="playerCount"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Player Count *</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g., 2-4, 1-5" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            
 
             <FormField
               control={form.control}
