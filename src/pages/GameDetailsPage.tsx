@@ -5,14 +5,15 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { GAMES } from "@/data/games";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import GameCard from "@/components/games/GameCard";
 import { ExternalLink } from "lucide-react";
+import { useGame, useGames, getFeaturedGames } from "@/hooks/useGames";
 
 const GameDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
-  const game = GAMES.find((g) => g.id === id);
+  const { data: game, isLoading: gameLoading, error: gameError } = useGame(id!);
+  const { data: allGames = [], isLoading: allGamesLoading } = useGames();
 
   // Generate an Amazon affiliate link
   const getAffiliateLink = (gameTitle: string) => {
@@ -21,15 +22,32 @@ const GameDetailsPage = () => {
   };
 
   // Recommend similar games (games in the same categories)
-  const similarGames = game
-    ? GAMES.filter(
+  const similarGames = game && !allGamesLoading
+    ? allGames.filter(
         (g) =>
           g.id !== game.id &&
           g.categories.some((cat) => game.categories.includes(cat))
       ).slice(0, 3)
     : [];
 
-  if (!game) {
+  if (gameLoading) {
+    return (
+      <div className="flex min-h-screen flex-col">
+        <Header />
+        <main className="flex-1 container py-12">
+          <div className="text-center">
+            <div className="animate-pulse">
+              <div className="h-8 bg-muted rounded w-1/3 mx-auto mb-4"></div>
+              <div className="h-4 bg-muted rounded w-1/2 mx-auto"></div>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (gameError || !game) {
     return (
       <div className="flex min-h-screen flex-col">
         <Header />
@@ -239,7 +257,16 @@ const GameDetailsPage = () => {
               <h2 className="text-2xl font-bold mb-6">Similar Games</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 {similarGames.map((game) => (
-                  <GameCard key={game.id} {...game} />
+                  <GameCard 
+                    key={game.id} 
+                    id={game.id}
+                    title={game.title}
+                    coverImage={game.coverImage}
+                    playerCount={game.playerCount}
+                    playTime={game.playTime}
+                    age={game.age}
+                    complexity={game.complexity}
+                  />
                 ))}
               </div>
             </div>
