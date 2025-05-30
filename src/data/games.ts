@@ -1,14 +1,6 @@
 
-import catan from "./game/catan";
-import ticketToRide from "./game/ticketToRide";
-import pandemic from "./game/pandemic";
-import codenames from "./game/codenames";
-import azul from "./game/azul";
-import gloomhaven from "./game/gloomhaven";
-import wingspan from "./game/wingspan";
-import scythe from "./game/scythe";
-import sevenWonders from "./game/sevenWonders";
-import terraformingMars from "./game/terraformingMars";
+// This file is kept for backward compatibility but now uses Supabase data
+// The actual data fetching is handled by the useGames hook
 
 export interface GameRule {
   id: string;
@@ -33,60 +25,21 @@ export interface Game {
   rules: GameRule;
 }
 
-export const GAMES: Game[] = [
-  catan,
-  ticketToRide,
-  pandemic,
-  codenames,
-  azul,
-  gloomhaven,
-  wingspan,
-  scythe,
-  sevenWonders,
-  terraformingMars,
-];
+// These functions are now handled by the useGames hook
+// but kept here for compatibility with existing components
+export const GAMES: Game[] = [];
 
 export const getFeaturedGames = (): Game[] => {
-  return GAMES.filter(game => 
-    ["catan", "ticket-to-ride", "pandemic", "azul"].includes(game.id)
-  );
+  console.warn('getFeaturedGames is deprecated. Use the hook version instead.');
+  return [];
 };
 
 export const getRecentGames = (): Game[] => {
-  return GAMES.filter(game => 
-    ["gloomhaven", "wingspan", "codenames"].includes(game.id)
-  );
+  console.warn('getRecentGames is deprecated. Use the hook version instead.');
+  return [];
 };
 
 export const getCategoriesWithGameCount = (): { id: string, name: string, description: string, gameCount: number }[] => {
-  const categories = [
-    {
-      id: "strategy",
-      name: "Strategy",
-      description: "Games that require careful thought and planning",
-    },
-    {
-      id: "family",
-      name: "Family",
-      description: "Fun for all ages, perfect for family game nights",
-    },
-    {
-      id: "party",
-      name: "Party Games",
-      description: "Exciting games for larger groups and social gatherings",
-    },
-    {
-      id: "card",
-      name: "Card Games",
-      description: "Games played primarily with cards",
-    },
-  ];
-  
-  return categories.map(category => {
-    const gameCount = GAMES.filter(game => game.categories.includes(category.id)).length;
-    return {
-      ...category,
-      gameCount
-    };
-  });
+  console.warn('getCategoriesWithGameCount is deprecated. Use the hook version instead.');
+  return [];
 };

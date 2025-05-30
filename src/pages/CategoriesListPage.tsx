@@ -3,10 +3,11 @@ import React from "react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import CategoryCard from "@/components/categories/CategoryCard";
-import { getCategoriesWithGameCount } from "@/data/games";
+import { useGames, getCategoriesWithGameCount } from "@/hooks/useGames";
 
 const CategoriesListPage = () => {
-  const categories = getCategoriesWithGameCount();
+  const { data: games = [], isLoading } = useGames();
+  const categories = getCategoriesWithGameCount(games);
   
   // Category icons mapping
   const CATEGORY_ICONS: Record<string, React.ReactNode> = {
@@ -78,6 +79,28 @@ const CategoriesListPage = () => {
       </svg>
     ),
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen flex-col">
+        <Header />
+        <main className="flex-1">
+          <div className="py-8 md:py-12 bg-muted/30">
+            <div className="container">
+              <h1 className="text-3xl font-bold mb-8">Browse By Category</h1>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="h-32 bg-background animate-pulse rounded-lg" />
+                ))}
+              </div>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen flex-col">

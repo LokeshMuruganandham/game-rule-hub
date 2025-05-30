@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
+import { useCreateGameRequest } from "@/hooks/useGameRequests";
 
 const formSchema = z.object({
   gameName: z.string().min(2, {
@@ -44,6 +45,8 @@ const formSchema = z.object({
 });
 
 const GameRequestForm = () => {
+  const createGameRequest = useCreateGameRequest();
+  
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -56,11 +59,24 @@ const GameRequestForm = () => {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log("Game request submitted:", values);
-    toast({
-      title: "Request Submitted!",
-      description: "Thank you for your game request. We'll review it and get back to you soon.",
+    
+    createGameRequest.mutate(values, {
+      onSuccess: () => {
+        toast({
+          title: "Request Submitted!",
+          description: "Thank you for your game request. We'll review it and get back to you soon.",
+        });
+        form.reset();
+      },
+      onError: (error) => {
+        console.error("Error submitting game request:", error);
+        toast({
+          title: "Error",
+          description: "Failed to submit your request. Please try again.",
+          variant: "destructive",
+        });
+      }
     });
-    form.reset();
   }
 
   return (
@@ -84,8 +100,6 @@ const GameRequestForm = () => {
                 </FormItem>
               )}
             />
-
-            
 
             <FormField
               control={form.control}
@@ -170,8 +184,12 @@ const GameRequestForm = () => {
             </div>
           </div>
 
-          <Button type="submit" className="w-full">
-            Submit Game Request
+          <Button 
+            type="submit" 
+            className="w-full"
+            disabled={createGameRequest.isPending}
+          >
+            {createGameRequest.isPending ? "Submitting..." : "Submit Game Request"}
           </Button>
         </form>
       </Form>

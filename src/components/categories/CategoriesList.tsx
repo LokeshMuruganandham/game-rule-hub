@@ -1,7 +1,7 @@
 
 import React from "react";
 import CategoryCard from "./CategoryCard";
-import { getCategoriesWithGameCount } from "@/data/games";
+import { useGames, getCategoriesWithGameCount } from "@/hooks/useGames";
 
 // Icons mapping for categories
 const CATEGORY_ICONS: Record<string, React.ReactNode> = {
@@ -75,7 +75,25 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
 };
 
 const CategoriesList = () => {
-  const CATEGORIES = getCategoriesWithGameCount();
+  const { data: games = [], isLoading } = useGames();
+  const categories = getCategoriesWithGameCount(games);
+
+  if (isLoading) {
+    return (
+      <div className="py-8 md:py-12 bg-muted/30">
+        <div className="container">
+          <h2 className="text-2xl md:text-3xl font-bold mb-6">
+            Browse By Category
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="h-32 bg-background animate-pulse rounded-lg" />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="py-8 md:py-12 bg-muted/30">
@@ -84,7 +102,7 @@ const CategoriesList = () => {
           Browse By Category
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-          {CATEGORIES.map((category) => (
+          {categories.map((category) => (
             <CategoryCard
               key={category.id}
               {...category}

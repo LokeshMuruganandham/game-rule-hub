@@ -9,7 +9,131 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      game_requests: {
+        Row: {
+          created_at: string
+          description: string
+          email: string
+          game_name: string
+          id: string
+          priority: string
+          status: string
+          updated_at: string
+          your_name: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          email: string
+          game_name: string
+          id?: string
+          priority: string
+          status?: string
+          updated_at?: string
+          your_name: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          email?: string
+          game_name?: string
+          id?: string
+          priority?: string
+          status?: string
+          updated_at?: string
+          your_name?: string
+        }
+        Relationships: []
+      }
+      game_rules: {
+        Row: {
+          created_at: string
+          full_rules: string[]
+          game_id: string
+          how_to_play: string[]
+          id: string
+          setup: string[]
+          summary: string
+          title: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          full_rules: string[]
+          game_id: string
+          how_to_play: string[]
+          id: string
+          setup: string[]
+          summary: string
+          title: string
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          full_rules?: string[]
+          game_id?: string
+          how_to_play?: string[]
+          id?: string
+          setup?: string[]
+          summary?: string
+          title?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "game_rules_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      games: {
+        Row: {
+          age: string
+          categories: string[]
+          complexity: number
+          cover_image: string
+          created_at: string
+          description: string
+          id: string
+          play_time: string
+          player_count: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          age: string
+          categories: string[]
+          complexity: number
+          cover_image: string
+          created_at?: string
+          description: string
+          id: string
+          play_time: string
+          player_count: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          age?: string
+          categories?: string[]
+          complexity?: number
+          cover_image?: string
+          created_at?: string
+          description?: string
+          id?: string
+          play_time?: string
+          player_count?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
