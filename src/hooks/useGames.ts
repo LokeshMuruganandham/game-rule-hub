@@ -19,12 +19,28 @@ export const useGames = () => {
 
       if (rulesError) throw rulesError;
 
-      // Combine games with their rules
+      // Combine games with their rules and map database columns to interface properties
       const games: Game[] = gamesData.map(game => {
         const rules = rulesData.find(rule => rule.game_id === game.id);
         return {
-          ...game,
-          rules: rules || {
+          id: game.id,
+          title: game.title,
+          coverImage: game.cover_image, // Map snake_case to camelCase
+          playerCount: game.player_count,
+          playTime: game.play_time,
+          age: game.age,
+          complexity: game.complexity,
+          categories: game.categories,
+          description: game.description,
+          rules: rules ? {
+            id: rules.id,
+            title: rules.title,
+            type: rules.type,
+            summary: rules.summary,
+            fullRules: rules.full_rules, // Map snake_case to camelCase
+            setup: rules.setup,
+            howToPlay: rules.how_to_play // Map snake_case to camelCase
+          } : {
             id: `${game.id}-rules`,
             title: `${game.title} Rules`,
             type: 'General',
@@ -63,8 +79,24 @@ export const useGame = (id: string) => {
       if (rulesError) throw rulesError;
 
       return {
-        ...gameData,
-        rules: rulesData || {
+        id: gameData.id,
+        title: gameData.title,
+        coverImage: gameData.cover_image,
+        playerCount: gameData.player_count,
+        playTime: gameData.play_time,
+        age: gameData.age,
+        complexity: gameData.complexity,
+        categories: gameData.categories,
+        description: gameData.description,
+        rules: rulesData ? {
+          id: rulesData.id,
+          title: rulesData.title,
+          type: rulesData.type,
+          summary: rulesData.summary,
+          fullRules: rulesData.full_rules,
+          setup: rulesData.setup,
+          howToPlay: rulesData.how_to_play
+        } : {
           id: `${gameData.id}-rules`,
           title: `${gameData.title} Rules`,
           type: 'General',

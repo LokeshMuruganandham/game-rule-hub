@@ -15,6 +15,8 @@ export const useCreateGameRequest = () => {
 
   return useMutation({
     mutationFn: async (data: GameRequestData) => {
+      console.log('Submitting game request:', data);
+      
       const { error } = await supabase
         .from('game_requests')
         .insert({
@@ -25,7 +27,12 @@ export const useCreateGameRequest = () => {
           email: data.email
         });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
+      
+      console.log('Game request submitted successfully');
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['game-requests'] });

@@ -29,7 +29,6 @@ const formSchema = z.object({
   gameName: z.string().min(2, {
     message: "Game name must be at least 2 characters.",
   }),
-  
   description: z.string().min(10, {
     message: "Description must be at least 10 characters.",
   }),
@@ -44,23 +43,35 @@ const formSchema = z.object({
   }),
 });
 
+type FormData = z.infer<typeof formSchema>;
+
 const GameRequestForm = () => {
   const createGameRequest = useCreateGameRequest();
   
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       gameName: "",
       description: "",
+      priority: "",
       yourName: "",
       email: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("Game request submitted:", values);
+  function onSubmit(values: FormData) {
+    console.log("Game request form submitted:", values);
     
-    createGameRequest.mutate(values, {
+    // Ensure all required fields are present
+    const requestData = {
+      gameName: values.gameName,
+      description: values.description,
+      priority: values.priority,
+      yourName: values.yourName,
+      email: values.email
+    };
+    
+    createGameRequest.mutate(requestData, {
       onSuccess: () => {
         toast({
           title: "Request Submitted!",
@@ -128,7 +139,7 @@ const GameRequestForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Request Priority *</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="How urgent is this request?" />
