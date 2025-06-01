@@ -10,7 +10,7 @@ const ContactPage = () => {
   const prefilledGame = searchParams.get("game") || "";
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col pt-16 md:pt-20">
       <Header />
       <main className="flex-1">
         <div className="container py-8 md:py-12">
