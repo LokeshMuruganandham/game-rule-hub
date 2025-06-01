@@ -1,13 +1,17 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useGames } from "@/hooks/useGames";
+import { smartSearchGames } from "@/lib/smartSearch";
+import SearchResults from "@/components/search/SearchResults";
 
 const Header = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const { data: games = [] } = useGames();
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,6 +21,15 @@ const Header = () => {
       setIsSearchOpen(false);
     }
   };
+
+  // Get search results
+  const searchResults = searchQuery.length > 0 ? smartSearchGames(games, searchQuery) : {
+    exactMatches: [],
+    similarMatches: [],
+    categoryMatches: []
+  };
+
+  const showResults = searchQuery.length > 0;
 
   return (
     <>
@@ -58,8 +71,8 @@ const Header = () => {
             <Link to="/categories" className="font-medium text-gray-700 hover:text-primary transition-colors">
               Categories
             </Link>
-            <Link to="/about" className="font-medium text-gray-700 hover:text-primary transition-colors">
-              About
+            <Link to="/contact" className="font-medium text-gray-700 hover:text-primary transition-colors">
+              Request Game
             </Link>
           </nav>
 
@@ -101,12 +114,12 @@ const Header = () => {
 
       {/* Search Modal */}
       <Dialog open={isSearchOpen} onOpenChange={setIsSearchOpen}>
-        <DialogContent className="sm:max-w-[600px] p-0 gap-0">
+        <DialogContent className="sm:max-w-[600px] p-0 gap-0 max-h-[80vh]">
           <DialogHeader className="px-6 py-4 border-b">
             <DialogTitle className="text-lg font-semibold">Search Games</DialogTitle>
           </DialogHeader>
           
-          <div className="p-6">
+          <div className="p-6 border-b">
             <form onSubmit={handleSearchSubmit} className="space-y-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -119,43 +132,39 @@ const Header = () => {
                   autoFocus
                 />
               </div>
-              
-              <div className="flex justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={() => setIsSearchOpen(false)}
-                  className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={!searchQuery.trim()}
-                  className="px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Search
-                </button>
-              </div>
             </form>
             
-            {/* Quick suggestions */}
-            <div className="mt-6">
-              <p className="text-sm text-gray-600 mb-3">Popular searches:</p>
-              <div className="flex flex-wrap gap-2">
-                {['Catan', 'Azul', 'Wingspan', 'Pandemic', 'Scythe'].map((suggestion) => (
-                  <button
-                    key={suggestion}
-                    onClick={() => {
-                      setSearchQuery(suggestion);
-                    }}
-                    className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
-                  >
-                    {suggestion}
-                  </button>
-                ))}
+            {/* Quick suggestions when no search */}
+            {!showResults && (
+              <div className="mt-6">
+                <p className="text-sm text-gray-600 mb-3">Popular searches:</p>
+                <div className="flex flex-wrap gap-2">
+                  {['Catan', 'Azul', 'Wingspan', 'Pandemic', 'Scythe'].map((suggestion) => (
+                    <button
+                      key={suggestion}
+                      onClick={() => {
+                        setSearchQuery(suggestion);
+                      }}
+                      className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
+                    >
+                      {suggestion}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
+
+          {/* Search Results */}
+          {showResults && (
+            <SearchResults
+              query={searchQuery}
+              exactMatches={searchResults.exactMatches}
+              similarMatches={searchResults.similarMatches}
+              categoryMatches={searchResults.categoryMatches}
+              onClose={() => setIsSearchOpen(false)}
+            />
+          )}
         </DialogContent>
       </Dialog>
     </>

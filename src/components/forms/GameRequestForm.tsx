@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -45,19 +45,32 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
-const GameRequestForm = () => {
+interface GameRequestFormProps {
+  initialGameName?: string;
+}
+
+const GameRequestForm = ({ initialGameName = "" }: GameRequestFormProps) => {
   const createGameRequest = useCreateGameRequest();
   
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      gameName: "",
+      gameName: initialGameName,
       description: "",
       priority: "",
       yourName: "",
       email: "",
     },
   });
+
+  // Update form when initialGameName changes
+  useEffect(() => {
+    if (initialGameName) {
+      form.setValue("gameName", initialGameName);
+      // Set higher priority if coming from search
+      form.setValue("priority", "medium");
+    }
+  }, [initialGameName, form]);
 
   function onSubmit(values: FormData) {
     console.log("Game request form submitted:", values);
@@ -92,6 +105,14 @@ const GameRequestForm = () => {
 
   return (
     <div className="bg-card p-6 rounded-lg border">
+      {initialGameName && (
+        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+          <p className="text-blue-800 text-sm">
+            <strong>Requesting:</strong> {initialGameName}
+          </p>
+        </div>
+      )}
+      
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           {/* Game Information Section */}

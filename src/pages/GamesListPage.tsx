@@ -5,6 +5,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import GameCard from "@/components/games/GameCard";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { 
   Select, 
   SelectContent, 
@@ -15,6 +16,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Search } from "lucide-react";
 import { useGames } from "@/hooks/useGames";
+import { smartSearchGames } from "@/lib/smartSearch";
 
 const GamesListPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -60,14 +62,25 @@ const GamesListPage = () => {
     new Set(games.flatMap((game) => game.categories))
   );
 
-  // Filter games based on search and filters
-  const filteredGames = games.filter((game) => {
-    // Search filter
-    const matchesSearch = !searchQuery || 
-      game.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      game.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      game.categories.some(cat => cat.toLowerCase().includes(searchQuery.toLowerCase()));
+  // Get smart search results
+  const searchResults = searchQuery ? smartSearchGames(games, searchQuery) : {
+    exactMatches: games,
+    similarMatches: [],
+    categoryMatches: []
+  };
 
+  // Combine all search results
+  const searchedGames = searchQuery 
+    ? [...searchResults.exactMatches, ...searchResults.similarMatches, ...searchResults.categoryMatches]
+    : games;
+
+  // Remove duplicates
+  const uniqueSearchedGames = searchedGames.filter((game, index, self) => 
+    index === self.findIndex(g => g.id === game.id)
+  );
+
+  // Apply additional filters
+  const filteredGames = uniqueSearchedGames.filter((game) => {
     // Player count filter
     const matchesPlayerCount = playerFilter === "all" || (() => {
       const playerCount = game.playerCount.toLowerCase();
@@ -91,8 +104,16 @@ const GamesListPage = () => {
     const matchesCategory = categoryFilter === "all" || 
       game.categories.includes(categoryFilter);
 
-    return matchesSearch && matchesPlayerCount && matchesComplexity && matchesCategory;
+    return matchesPlayerCount && matchesComplexity && matchesCategory;
   });
+
+  const hasNoResults = searchQuery && filteredGames.length === 0;
+  const hasSimilarResults = searchQuery && searchResults.exactMatches.length === 0 && 
+    (searchResults.similarMatches.length > 0 || searchResults.categoryMatches.length > 0);
+
+  const handleRequestGame = () => {
+    navigate(`/contact?game=${encodeURIComponent(searchQuery)}`);
+  };
 
   if (isLoading) {
     return (
@@ -220,14 +241,52 @@ const GamesListPage = () => {
                 </Select>
               </div>
             </div>
+
+            {/* Search feedback messages */}
+            {hasSimilarResults && (
+              <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <h3 className="font-medium text-blue-900 mb-2">
+                  {searchResults.similarMatches.length > 0 ? 
+                    `Did you mean one of these games?` : 
+                    `Found games in similar categories`
+                  }
+                </h3>
+                <p className="text-blue-700 text-sm">
+                  We couldn't find an exact match for "{searchQuery}", but here are some similar options.
+                </p>
+              </div>
+            )}
             
             {/* Results count */}
-            <p className="text-muted-foreground mb-6">
-              Found {filteredGames.length} {filteredGames.length === 1 ? "game" : "games"}
-            </p>
+            <div className="flex justify-between items-center mb-6">
+              <p className="text-muted-foreground">
+                Found {filteredGames.length} {filteredGames.length === 1 ? "game" : "games"}
+                {searchQuery && ` for "${searchQuery}"`}
+              </p>
+              
+              {searchQuery && !hasNoResults && (
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={handleRequestGame}
+                >
+                  Request "{searchQuery}"
+                </Button>
+              )}
+            </div>
             
-            {/* Games grid */}
-            {filteredGames.length > 0 ? (
+            {/* Games grid or no results */}
+            {hasNoResults ? (
+              <div className="text-center py-12">
+                <h3 className="text-xl font-medium mb-2">No games found for "{searchQuery}"</h3>
+                <p className="text-muted-foreground mb-6">
+                  We couldn't find any games matching your search and filters.
+                </p>
+                <Button onClick={handleRequestGame}>
+                  Request "{searchQuery}" to be added
+                </Button>
+              </div>
+            ) : filteredGames.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {filteredGames.map((game) => (
                   <GameCard 
