@@ -84,8 +84,8 @@ const CategoriesListPage = () => {
     return (
       <div className="flex min-h-screen flex-col">
         <Header />
-        <main className="flex-1">
-          <div className="py-8 md:py-12 bg-muted/30">
+        <main className="flex-1 pt-24 bg-muted/30">
+          <div className="py-8 md:py-12">
             <div className="container">
               <h1 className="text-3xl font-bold mb-8">Browse By Category</h1>
               
@@ -105,8 +105,8 @@ const CategoriesListPage = () => {
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <main className="flex-1">
-        <div className="py-8 md:py-12 bg-muted/30">
+      <main className="flex-1 pt-24 bg-muted/30">
+        <div className="py-8 md:py-12">
           <div className="container">
             <h1 className="text-3xl font-bold mb-8">Browse By Category</h1>
             

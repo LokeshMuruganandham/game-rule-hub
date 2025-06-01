@@ -100,15 +100,17 @@ const CategoryPage = () => {
     return (
       <div className="flex min-h-screen flex-col">
         <Header />
-        <main className="flex-1 container py-12">
-          <div className="text-center">
-            <h2 className="text-2xl font-bold mb-4">Category Not Found</h2>
-            <p className="mb-6">Sorry, we couldn't find the category you're looking for.</p>
-            <Link to="/">
-              <button className="bg-primary text-primary-foreground px-4 py-2 rounded">
-                Return to Home
-              </button>
-            </Link>
+        <main className="flex-1 pt-24">
+          <div className="container py-12">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold mb-4">Category Not Found</h2>
+              <p className="mb-6">Sorry, we couldn't find the category you're looking for.</p>
+              <Link to="/">
+                <button className="bg-primary text-primary-foreground px-4 py-2 rounded">
+                  Return to Home
+                </button>
+              </Link>
+            </div>
           </div>
         </main>
         <Footer />
@@ -119,8 +121,8 @@ const CategoryPage = () => {
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <main className="flex-1">
-        <div className="bg-muted/30 py-8">
+      <main className="flex-1 pt-24 bg-muted/30">
+        <div className="py-8">
           <div className="container">
             {/* Breadcrumb */}
             <div className="flex items-center text-sm text-muted-foreground mb-6">
