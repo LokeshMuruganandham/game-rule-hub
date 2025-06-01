@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Header from "@/components/layout/Header";
@@ -119,7 +118,7 @@ const GamesListPage = () => {
     return (
       <div className="flex min-h-screen flex-col">
         <Header />
-        <main className="flex-1">
+        <main className="flex-1 pt-24">
           <div className="bg-muted/30 py-8">
             <div className="container">
               <h1 className="text-3xl font-bold mb-6">All Games</h1>
@@ -140,7 +139,7 @@ const GamesListPage = () => {
     return (
       <div className="flex min-h-screen flex-col">
         <Header />
-        <main className="flex-1">
+        <main className="flex-1 pt-24">
           <div className="bg-muted/30 py-8">
             <div className="container">
               <h1 className="text-3xl font-bold mb-6">All Games</h1>
@@ -161,7 +160,7 @@ const GamesListPage = () => {
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <main className="flex-1">
+      <main className="flex-1 pt-24">
         <div className="bg-muted/30 py-8">
           <div className="container">
             <h1 className="text-3xl font-bold mb-6">All Games</h1>

@@ -71,9 +71,6 @@ const Header = () => {
             <Link to="/categories" className="font-medium text-gray-700 hover:text-primary transition-colors">
               Categories
             </Link>
-            <Link to="/contact" className="font-medium text-gray-700 hover:text-primary transition-colors">
-              Request Game
-            </Link>
           </nav>
 
           {/* Search Icon and Mobile Menu */}

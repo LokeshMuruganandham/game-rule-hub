@@ -12,7 +12,7 @@ const ContactPage = () => {
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <main className="flex-1 pt-20">
+      <main className="flex-1 pt-24">
         <div className="container py-8 md:py-12">
           <div className="max-w-2xl mx-auto">
             <div className="text-center mb-8">
