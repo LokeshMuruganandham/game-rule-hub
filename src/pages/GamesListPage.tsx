@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Header from "@/components/layout/Header";
@@ -13,7 +14,7 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Search } from "lucide-react";
+import { Search, Filter, X } from "lucide-react";
 import { useGames } from "@/hooks/useGames";
 import { smartSearchGames } from "@/lib/smartSearch";
 
@@ -55,6 +56,18 @@ const GamesListPage = () => {
       setSearchParams({});
     }
   };
+
+  // Clear all filters
+  const clearFilters = () => {
+    setPlayerFilter("all");
+    setComplexityFilter("all");
+    setCategoryFilter("all");
+    setSearchQuery("");
+    setSearchParams({});
+  };
+
+  // Check if any filters are active
+  const hasActiveFilters = playerFilter !== "all" || complexityFilter !== "all" || categoryFilter !== "all" || searchQuery;
 
   // Extract all unique categories
   const allCategories = Array.from(
@@ -163,81 +176,121 @@ const GamesListPage = () => {
       <main className="flex-1 pt-24">
         <div className="bg-muted/30 py-8">
           <div className="container">
-            <h1 className="text-3xl font-bold mb-6">All Games</h1>
+            <h1 className="text-3xl font-bold mb-8">All Games</h1>
             
-            {/* Search and filters */}
-            <div className="grid gap-4 mb-8 lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1">
-              {/* Search box */}
-              <div className="relative">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  type="text"
-                  placeholder="Search games..."
-                  className="pl-9"
-                  value={searchQuery}
-                  onChange={handleSearchChange}
-                />
+            {/* Modern Search and Filter Section */}
+            <div className="mb-8">
+              {/* Search Bar - Full Width on Top */}
+              <div className="mb-6">
+                <div className="relative max-w-2xl">
+                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <Input
+                    type="text"
+                    placeholder="Search for your favorite board games..."
+                    className="pl-12 h-12 text-base bg-background/80 backdrop-blur-sm border-border/50 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all duration-200"
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                  />
+                </div>
               </div>
-              
-              {/* Player count filter */}
-              <div className="space-y-2">
-                <Label htmlFor="player-count">Player Count</Label>
-                <Select 
-                  value={playerFilter} 
-                  onValueChange={setPlayerFilter}
-                >
-                  <SelectTrigger id="player-count">
-                    <SelectValue placeholder="Any players" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Any players</SelectItem>
-                    <SelectItem value="1-2">1-2 players</SelectItem>
-                    <SelectItem value="3-4">3-4 players</SelectItem>
-                    <SelectItem value="5+">5+ players</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              {/* Complexity filter */}
-              <div className="space-y-2">
-                <Label htmlFor="complexity">Complexity</Label>
-                <Select 
-                  value={complexityFilter} 
-                  onValueChange={setComplexityFilter}
-                >
-                  <SelectTrigger id="complexity">
-                    <SelectValue placeholder="Any complexity" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Any complexity</SelectItem>
-                    <SelectItem value="1">1 - Easy</SelectItem>
-                    <SelectItem value="2">2 - Moderate</SelectItem>
-                    <SelectItem value="3">3 - Medium</SelectItem>
-                    <SelectItem value="4">4 - Hard</SelectItem>
-                    <SelectItem value="5">5 - Expert</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              {/* Category filter */}
-              <div className="space-y-2">
-                <Label htmlFor="category">Category</Label>
-                <Select 
-                  value={categoryFilter} 
-                  onValueChange={setCategoryFilter}
-                >
-                  <SelectTrigger id="category">
-                    <SelectValue placeholder="All categories" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All categories</SelectItem>
-                    {allCategories.map((category) => (
-                      <SelectItem key={category} value={category}>
-                        {category.charAt(0).toUpperCase() + category.slice(1)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+
+              {/* Filters Section */}
+              <div className="bg-background/50 backdrop-blur-sm rounded-xl border border-border/50 p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="flex items-center gap-2">
+                    <Filter className="h-5 w-5 text-muted-foreground" />
+                    <h3 className="text-lg font-semibold">Filters</h3>
+                  </div>
+                  {hasActiveFilters && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={clearFilters}
+                      className="text-muted-foreground hover:text-foreground ml-auto"
+                    >
+                      <X className="h-4 w-4 mr-2" />
+                      Clear all
+                    </Button>
+                  )}
+                </div>
+
+                <div className="grid gap-6 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
+                  {/* Player Count Filter */}
+                  <div className="space-y-3">
+                    <Label htmlFor="player-count" className="text-sm font-medium text-foreground">
+                      Player Count
+                    </Label>
+                    <Select 
+                      value={playerFilter} 
+                      onValueChange={setPlayerFilter}
+                    >
+                      <SelectTrigger 
+                        id="player-count" 
+                        className="h-11 bg-background/80 border-border/50 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all duration-200"
+                      >
+                        <SelectValue placeholder="Any players" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-popover/95 backdrop-blur-sm border-border/50">
+                        <SelectItem value="all">Any players</SelectItem>
+                        <SelectItem value="1-2">1-2 players</SelectItem>
+                        <SelectItem value="3-4">3-4 players</SelectItem>
+                        <SelectItem value="5+">5+ players</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  {/* Complexity Filter */}
+                  <div className="space-y-3">
+                    <Label htmlFor="complexity" className="text-sm font-medium text-foreground">
+                      Complexity Level
+                    </Label>
+                    <Select 
+                      value={complexityFilter} 
+                      onValueChange={setComplexityFilter}
+                    >
+                      <SelectTrigger 
+                        id="complexity" 
+                        className="h-11 bg-background/80 border-border/50 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all duration-200"
+                      >
+                        <SelectValue placeholder="Any complexity" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-popover/95 backdrop-blur-sm border-border/50">
+                        <SelectItem value="all">Any complexity</SelectItem>
+                        <SelectItem value="1">1 - Easy</SelectItem>
+                        <SelectItem value="2">2 - Moderate</SelectItem>
+                        <SelectItem value="3">3 - Medium</SelectItem>
+                        <SelectItem value="4">4 - Hard</SelectItem>
+                        <SelectItem value="5">5 - Expert</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  {/* Category Filter */}
+                  <div className="space-y-3">
+                    <Label htmlFor="category" className="text-sm font-medium text-foreground">
+                      Game Category
+                    </Label>
+                    <Select 
+                      value={categoryFilter} 
+                      onValueChange={setCategoryFilter}
+                    >
+                      <SelectTrigger 
+                        id="category" 
+                        className="h-11 bg-background/80 border-border/50 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all duration-200"
+                      >
+                        <SelectValue placeholder="All categories" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-popover/95 backdrop-blur-sm border-border/50">
+                        <SelectItem value="all">All categories</SelectItem>
+                        {allCategories.map((category) => (
+                          <SelectItem key={category} value={category}>
+                            {category.charAt(0).toUpperCase() + category.slice(1)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
               </div>
             </div>
 
