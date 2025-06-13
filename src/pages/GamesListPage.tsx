@@ -43,14 +43,6 @@ const GamesListPage = () => {
         navigate(`/games/${exactMatch.id}`);
         return;
       }
-      
-      // Auto-scroll to results when search is performed
-      setTimeout(() => {
-        const resultsElement = document.getElementById('search-results');
-        if (resultsElement) {
-          resultsElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 100);
     }
   }, [searchParams, navigate, games]);
 
@@ -192,36 +184,49 @@ const GamesListPage = () => {
               </p>
             </div>
             
-            {/* Streamlined Search Section */}
+            {/* Compact Search and Filters Section */}
             <div className="mb-6 space-y-4">
-              {/* Prominent Search Bar */}
-              <div className="relative max-w-2xl mx-auto">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <Input
-                  type="text"
-                  placeholder="Search for your favorite board games..."
-                  className="pl-12 h-14 text-lg bg-background shadow-sm border-2 border-border/50 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200"
-                  value={searchQuery}
-                  onChange={handleSearchChange}
-                />
-                {searchQuery && (
-                  <div className="absolute right-4 top-1/2 transform -translate-y-1/2 text-sm text-muted-foreground">
-                    {filteredGames.length} result{filteredGames.length !== 1 ? 's' : ''}
-                  </div>
+              {/* Left-aligned Search Bar */}
+              <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+                <div className="relative w-full sm:w-96">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    type="text"
+                    placeholder="Search board games..."
+                    className="pl-10 h-10 bg-background border border-border focus:border-primary transition-colors"
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                  />
+                  {searchQuery && (
+                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-xs text-muted-foreground bg-background px-1">
+                      {filteredGames.length}
+                    </div>
+                  )}
+                </div>
+                
+                {searchQuery && !hasNoResults && (
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={handleRequestGame}
+                    className="whitespace-nowrap"
+                  >
+                    Request "{searchQuery}"
+                  </Button>
                 )}
               </div>
 
-              {/* Compact Filters Row */}
-              <div className="bg-background/70 backdrop-blur-sm rounded-lg border border-border/50 p-4">
-                <div className="flex flex-wrap items-center gap-4">
-                  <div className="flex items-center gap-2 text-sm font-medium">
-                    <Filter className="h-4 w-4 text-muted-foreground" />
+              {/* Compact Filters */}
+              <div className="bg-background border border-border rounded-lg p-4">
+                <div className="flex flex-wrap items-center gap-3">
+                  <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                    <Filter className="h-4 w-4" />
                     <span>Filters:</span>
                   </div>
                   
                   <div className="flex flex-wrap gap-3 flex-1">
                     {/* Player Count Filter */}
-                    <div className="min-w-[140px]">
+                    <div className="min-w-[120px]">
                       <Select value={playerFilter} onValueChange={setPlayerFilter}>
                         <SelectTrigger className="h-9 text-sm">
                           <SelectValue placeholder="Players" />
@@ -236,7 +241,7 @@ const GamesListPage = () => {
                     </div>
                     
                     {/* Complexity Filter */}
-                    <div className="min-w-[140px]">
+                    <div className="min-w-[120px]">
                       <Select value={complexityFilter} onValueChange={setComplexityFilter}>
                         <SelectTrigger className="h-9 text-sm">
                           <SelectValue placeholder="Complexity" />
@@ -253,7 +258,7 @@ const GamesListPage = () => {
                     </div>
                     
                     {/* Category Filter */}
-                    <div className="min-w-[140px]">
+                    <div className="min-w-[120px]">
                       <Select value={categoryFilter} onValueChange={setCategoryFilter}>
                         <SelectTrigger className="h-9 text-sm">
                           <SelectValue placeholder="Category" />
@@ -279,7 +284,7 @@ const GamesListPage = () => {
                       className="text-muted-foreground hover:text-foreground h-9"
                     >
                       <X className="h-4 w-4 mr-1" />
-                      Clear
+                      Clear all
                     </Button>
                   )}
                 </div>
@@ -301,11 +306,11 @@ const GamesListPage = () => {
               </div>
             )}
             
-            {/* Results Section with ID for scroll targeting */}
-            <div id="search-results">
+            {/* Results Section */}
+            <div>
               {/* Results Header */}
               <div className="flex justify-between items-center mb-4">
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3">
                   <h2 className="text-lg font-semibold">
                     {searchQuery ? `Search Results` : `All Games`}
                   </h2>
@@ -313,16 +318,6 @@ const GamesListPage = () => {
                     {filteredGames.length} game{filteredGames.length !== 1 ? 's' : ''}
                   </span>
                 </div>
-                
-                {searchQuery && !hasNoResults && (
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={handleRequestGame}
-                  >
-                    Request "{searchQuery}"
-                  </Button>
-                )}
               </div>
               
               {/* Games grid or no results */}
