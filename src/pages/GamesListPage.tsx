@@ -43,6 +43,14 @@ const GamesListPage = () => {
         navigate(`/games/${exactMatch.id}`);
         return;
       }
+      
+      // Auto-scroll to results when search is performed
+      setTimeout(() => {
+        const resultsElement = document.getElementById('search-results');
+        if (resultsElement) {
+          resultsElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
     }
   }, [searchParams, navigate, games]);
 
@@ -131,10 +139,10 @@ const GamesListPage = () => {
     return (
       <div className="flex min-h-screen flex-col">
         <Header />
-        <main className="flex-1 pt-24">
-          <div className="bg-muted/30 py-8">
+        <main className="flex-1 pt-20">
+          <div className="bg-muted/30 py-6">
             <div className="container">
-              <h1 className="text-3xl font-bold mb-6">All Games</h1>
+              <h1 className="text-3xl font-bold mb-4">All Games</h1>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {Array.from({ length: 8 }).map((_, i) => (
                   <div key={i} className="h-64 bg-muted animate-pulse rounded-lg" />
@@ -152,10 +160,10 @@ const GamesListPage = () => {
     return (
       <div className="flex min-h-screen flex-col">
         <Header />
-        <main className="flex-1 pt-24">
-          <div className="bg-muted/30 py-8">
+        <main className="flex-1 pt-20">
+          <div className="bg-muted/30 py-6">
             <div className="container">
-              <h1 className="text-3xl font-bold mb-6">All Games</h1>
+              <h1 className="text-3xl font-bold mb-4">All Games</h1>
               <div className="text-center py-12">
                 <h3 className="text-xl font-medium mb-2">Failed to load games</h3>
                 <p className="text-muted-foreground">
@@ -173,194 +181,185 @@ const GamesListPage = () => {
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <main className="flex-1 pt-24">
-        <div className="bg-muted/30 py-8">
-          <div className="container">
-            <h1 className="text-3xl font-bold mb-8">All Games</h1>
+      <main className="flex-1 pt-20">
+        <div className="bg-muted/30 min-h-screen">
+          <div className="container py-6">
+            {/* Compact Header */}
+            <div className="mb-6">
+              <h1 className="text-3xl font-bold mb-2">All Games</h1>
+              <p className="text-muted-foreground">
+                Discover and learn the rules for your favorite board games
+              </p>
+            </div>
             
-            {/* Modern Search and Filter Section */}
-            <div className="mb-8">
-              {/* Search Bar - Full Width on Top */}
-              <div className="mb-6">
-                <div className="relative max-w-2xl">
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                  <Input
-                    type="text"
-                    placeholder="Search for your favorite board games..."
-                    className="pl-12 h-12 text-base bg-background/80 backdrop-blur-sm border-border/50 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all duration-200"
-                    value={searchQuery}
-                    onChange={handleSearchChange}
-                  />
-                </div>
+            {/* Streamlined Search Section */}
+            <div className="mb-6 space-y-4">
+              {/* Prominent Search Bar */}
+              <div className="relative max-w-2xl mx-auto">
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Input
+                  type="text"
+                  placeholder="Search for your favorite board games..."
+                  className="pl-12 h-14 text-lg bg-background shadow-sm border-2 border-border/50 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200"
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                />
+                {searchQuery && (
+                  <div className="absolute right-4 top-1/2 transform -translate-y-1/2 text-sm text-muted-foreground">
+                    {filteredGames.length} result{filteredGames.length !== 1 ? 's' : ''}
+                  </div>
+                )}
               </div>
 
-              {/* Filters Section */}
-              <div className="bg-background/50 backdrop-blur-sm rounded-xl border border-border/50 p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="flex items-center gap-2">
-                    <Filter className="h-5 w-5 text-muted-foreground" />
-                    <h3 className="text-lg font-semibold">Filters</h3>
+              {/* Compact Filters Row */}
+              <div className="bg-background/70 backdrop-blur-sm rounded-lg border border-border/50 p-4">
+                <div className="flex flex-wrap items-center gap-4">
+                  <div className="flex items-center gap-2 text-sm font-medium">
+                    <Filter className="h-4 w-4 text-muted-foreground" />
+                    <span>Filters:</span>
                   </div>
+                  
+                  <div className="flex flex-wrap gap-3 flex-1">
+                    {/* Player Count Filter */}
+                    <div className="min-w-[140px]">
+                      <Select value={playerFilter} onValueChange={setPlayerFilter}>
+                        <SelectTrigger className="h-9 text-sm">
+                          <SelectValue placeholder="Players" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">Any players</SelectItem>
+                          <SelectItem value="1-2">1-2 players</SelectItem>
+                          <SelectItem value="3-4">3-4 players</SelectItem>
+                          <SelectItem value="5+">5+ players</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    {/* Complexity Filter */}
+                    <div className="min-w-[140px]">
+                      <Select value={complexityFilter} onValueChange={setComplexityFilter}>
+                        <SelectTrigger className="h-9 text-sm">
+                          <SelectValue placeholder="Complexity" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">Any complexity</SelectItem>
+                          <SelectItem value="1">1 - Easy</SelectItem>
+                          <SelectItem value="2">2 - Moderate</SelectItem>
+                          <SelectItem value="3">3 - Medium</SelectItem>
+                          <SelectItem value="4">4 - Hard</SelectItem>
+                          <SelectItem value="5">5 - Expert</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    {/* Category Filter */}
+                    <div className="min-w-[140px]">
+                      <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                        <SelectTrigger className="h-9 text-sm">
+                          <SelectValue placeholder="Category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All categories</SelectItem>
+                          {allCategories.map((category) => (
+                            <SelectItem key={category} value={category}>
+                              {category.charAt(0).toUpperCase() + category.slice(1)}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  {/* Clear Filters */}
                   {hasActiveFilters && (
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={clearFilters}
-                      className="text-muted-foreground hover:text-foreground ml-auto"
+                      className="text-muted-foreground hover:text-foreground h-9"
                     >
-                      <X className="h-4 w-4 mr-2" />
-                      Clear all
+                      <X className="h-4 w-4 mr-1" />
+                      Clear
                     </Button>
                   )}
-                </div>
-
-                <div className="grid gap-6 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
-                  {/* Player Count Filter */}
-                  <div className="space-y-3">
-                    <Label htmlFor="player-count" className="text-sm font-medium text-foreground">
-                      Player Count
-                    </Label>
-                    <Select 
-                      value={playerFilter} 
-                      onValueChange={setPlayerFilter}
-                    >
-                      <SelectTrigger 
-                        id="player-count" 
-                        className="h-11 bg-background/80 border-border/50 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all duration-200"
-                      >
-                        <SelectValue placeholder="Any players" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-popover/95 backdrop-blur-sm border-border/50">
-                        <SelectItem value="all">Any players</SelectItem>
-                        <SelectItem value="1-2">1-2 players</SelectItem>
-                        <SelectItem value="3-4">3-4 players</SelectItem>
-                        <SelectItem value="5+">5+ players</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  {/* Complexity Filter */}
-                  <div className="space-y-3">
-                    <Label htmlFor="complexity" className="text-sm font-medium text-foreground">
-                      Complexity Level
-                    </Label>
-                    <Select 
-                      value={complexityFilter} 
-                      onValueChange={setComplexityFilter}
-                    >
-                      <SelectTrigger 
-                        id="complexity" 
-                        className="h-11 bg-background/80 border-border/50 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all duration-200"
-                      >
-                        <SelectValue placeholder="Any complexity" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-popover/95 backdrop-blur-sm border-border/50">
-                        <SelectItem value="all">Any complexity</SelectItem>
-                        <SelectItem value="1">1 - Easy</SelectItem>
-                        <SelectItem value="2">2 - Moderate</SelectItem>
-                        <SelectItem value="3">3 - Medium</SelectItem>
-                        <SelectItem value="4">4 - Hard</SelectItem>
-                        <SelectItem value="5">5 - Expert</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  {/* Category Filter */}
-                  <div className="space-y-3">
-                    <Label htmlFor="category" className="text-sm font-medium text-foreground">
-                      Game Category
-                    </Label>
-                    <Select 
-                      value={categoryFilter} 
-                      onValueChange={setCategoryFilter}
-                    >
-                      <SelectTrigger 
-                        id="category" 
-                        className="h-11 bg-background/80 border-border/50 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all duration-200"
-                      >
-                        <SelectValue placeholder="All categories" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-popover/95 backdrop-blur-sm border-border/50">
-                        <SelectItem value="all">All categories</SelectItem>
-                        {allCategories.map((category) => (
-                          <SelectItem key={category} value={category}>
-                            {category.charAt(0).toUpperCase() + category.slice(1)}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
                 </div>
               </div>
             </div>
 
             {/* Search feedback messages */}
             {hasSimilarResults && (
-              <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <h3 className="font-medium text-blue-900 mb-2">
+              <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <h3 className="font-medium text-blue-900 mb-1 text-sm">
                   {searchResults.similarMatches.length > 0 ? 
                     `Did you mean one of these games?` : 
                     `Found games in similar categories`
                   }
                 </h3>
-                <p className="text-blue-700 text-sm">
+                <p className="text-blue-700 text-xs">
                   We couldn't find an exact match for "{searchQuery}", but here are some similar options.
                 </p>
               </div>
             )}
             
-            {/* Results count */}
-            <div className="flex justify-between items-center mb-6">
-              <p className="text-muted-foreground">
-                Found {filteredGames.length} {filteredGames.length === 1 ? "game" : "games"}
-                {searchQuery && ` for "${searchQuery}"`}
-              </p>
+            {/* Results Section with ID for scroll targeting */}
+            <div id="search-results">
+              {/* Results Header */}
+              <div className="flex justify-between items-center mb-4">
+                <div className="flex items-center gap-4">
+                  <h2 className="text-lg font-semibold">
+                    {searchQuery ? `Search Results` : `All Games`}
+                  </h2>
+                  <span className="text-sm text-muted-foreground px-2 py-1 bg-muted rounded-full">
+                    {filteredGames.length} game{filteredGames.length !== 1 ? 's' : ''}
+                  </span>
+                </div>
+                
+                {searchQuery && !hasNoResults && (
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={handleRequestGame}
+                  >
+                    Request "{searchQuery}"
+                  </Button>
+                )}
+              </div>
               
-              {searchQuery && !hasNoResults && (
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={handleRequestGame}
-                >
-                  Request "{searchQuery}"
-                </Button>
+              {/* Games grid or no results */}
+              {hasNoResults ? (
+                <div className="text-center py-12">
+                  <h3 className="text-xl font-medium mb-2">No games found for "{searchQuery}"</h3>
+                  <p className="text-muted-foreground mb-6">
+                    We couldn't find any games matching your search and filters.
+                  </p>
+                  <Button onClick={handleRequestGame}>
+                    Request "{searchQuery}" to be added
+                  </Button>
+                </div>
+              ) : filteredGames.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                  {filteredGames.map((game) => (
+                    <GameCard 
+                      key={game.id} 
+                      id={game.id}
+                      title={game.title}
+                      coverImage={game.coverImage}
+                      playerCount={game.playerCount}
+                      playTime={game.playTime}
+                      age={game.age}
+                      complexity={game.complexity}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12">
+                  <h3 className="text-xl font-medium mb-2">No games found</h3>
+                  <p className="text-muted-foreground">
+                    Try adjusting your filters or search query
+                  </p>
+                </div>
               )}
             </div>
-            
-            {/* Games grid or no results */}
-            {hasNoResults ? (
-              <div className="text-center py-12">
-                <h3 className="text-xl font-medium mb-2">No games found for "{searchQuery}"</h3>
-                <p className="text-muted-foreground mb-6">
-                  We couldn't find any games matching your search and filters.
-                </p>
-                <Button onClick={handleRequestGame}>
-                  Request "{searchQuery}" to be added
-                </Button>
-              </div>
-            ) : filteredGames.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {filteredGames.map((game) => (
-                  <GameCard 
-                    key={game.id} 
-                    id={game.id}
-                    title={game.title}
-                    coverImage={game.coverImage}
-                    playerCount={game.playerCount}
-                    playTime={game.playTime}
-                    age={game.age}
-                    complexity={game.complexity}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-12">
-                <h3 className="text-xl font-medium mb-2">No games found</h3>
-                <p className="text-muted-foreground">
-                  Try adjusting your filters or search query
-                </p>
-              </div>
-            )}
           </div>
         </div>
       </main>
