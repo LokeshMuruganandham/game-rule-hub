@@ -3,17 +3,18 @@ import React from "react";
 import { useParams, Link } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import { GAMES, getCategoriesWithGameCount } from "@/data/games";
+import { useGames, getCategoriesWithGameCount } from "@/hooks/useGames";
 import GameCard from "@/components/games/GameCard";
 import { ChevronRight } from "lucide-react";
 
 const CategoryPage = () => {
   const { id } = useParams<{ id: string }>();
-  const categories = getCategoriesWithGameCount();
+  const { data: games = [], isLoading } = useGames();
+  const categories = getCategoriesWithGameCount(games);
   const category = categories.find((cat) => cat.id === id);
   
   // Filter games by category
-  const gamesInCategory = GAMES.filter((game) => 
+  const gamesInCategory = games.filter((game) => 
     game.categories.includes(id || '')
   );
   
@@ -96,11 +97,28 @@ const CategoryPage = () => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen flex-col">
+        <Header />
+        <main className="flex-1 pt-24 bg-muted/30">
+          <div className="container py-12">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold mb-4">Loading...</h2>
+              <div className="animate-pulse bg-muted h-32 rounded-lg"></div>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
   if (!category) {
     return (
       <div className="flex min-h-screen flex-col">
         <Header />
-        <main className="flex-1 pt-24">
+        <main className="flex-1 pt-24 bg-muted/30">
           <div className="container py-12">
             <div className="text-center">
               <h2 className="text-2xl font-bold mb-4">Category Not Found</h2>
