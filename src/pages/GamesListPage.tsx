@@ -175,9 +175,9 @@ const GamesListPage = () => {
       <Header />
       <main className="flex-1 pt-20">
         <div className="bg-muted/30 min-h-screen">
-          <div className="container px-4 md:px-6">
+          <div className="container py-6 px-6 md:px-6 max-w-7xl mx-auto">
             {/* Compact Header */}
-            <div className="mb-6 pt-6">
+            <div className="mb-6">
               <h1 className="text-2xl md:text-3xl font-bold mb-2">All Games</h1>
               <p className="text-muted-foreground text-sm md:text-base">
                 Discover and learn the rules for your favorite board games
@@ -308,7 +308,7 @@ const GamesListPage = () => {
             )}
             
             {/* Results Section */}
-            <div className="pb-6">
+            <div>
               {/* Results Header */}
               <div className="flex justify-between items-center mb-4">
                 <div className="flex items-center gap-3">
