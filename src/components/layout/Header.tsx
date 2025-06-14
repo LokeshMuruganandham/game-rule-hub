@@ -1,15 +1,17 @@
 
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Search, X } from "lucide-react";
+import { Search, X, Menu } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger, DrawerClose } from "@/components/ui/drawer";
 import { useGames } from "@/hooks/useGames";
 import { smartSearchGames } from "@/lib/smartSearch";
 import SearchResults from "@/components/search/SearchResults";
 
 const Header = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const { data: games = [] } = useGames();
 
@@ -30,6 +32,10 @@ const Header = () => {
   };
 
   const showResults = searchQuery.length > 0;
+
+  const handleMobileNavClick = () => {
+    setIsMobileMenuOpen(false);
+  };
 
   return (
     <>
@@ -86,24 +92,51 @@ const Header = () => {
 
             {/* Mobile Menu */}
             <div className="md:hidden">
-              <button className="p-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-5 w-5 text-gray-800"
-                >
-                  <line x1="4" x2="20" y1="12" y2="12" />
-                  <line x1="4" x2="20" y1="6" y2="6" />
-                  <line x1="4" x2="20" y1="18" y2="18" />
-                </svg>
-              </button>
+              <Drawer open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+                <DrawerTrigger asChild>
+                  <button className="p-2" aria-label="Open mobile menu">
+                    <Menu className="h-5 w-5 text-gray-800" />
+                  </button>
+                </DrawerTrigger>
+                <DrawerContent>
+                  <DrawerHeader>
+                    <DrawerTitle>Navigation</DrawerTitle>
+                  </DrawerHeader>
+                  <div className="p-4 space-y-4">
+                    <Link 
+                      to="/" 
+                      className="block py-3 px-4 text-lg font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-lg transition-colors"
+                      onClick={handleMobileNavClick}
+                    >
+                      Home
+                    </Link>
+                    <Link 
+                      to="/games" 
+                      className="block py-3 px-4 text-lg font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-lg transition-colors"
+                      onClick={handleMobileNavClick}
+                    >
+                      Games
+                    </Link>
+                    <Link 
+                      to="/categories" 
+                      className="block py-3 px-4 text-lg font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-lg transition-colors"
+                      onClick={handleMobileNavClick}
+                    >
+                      Categories
+                    </Link>
+                    <button
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        setIsSearchOpen(true);
+                      }}
+                      className="flex items-center gap-3 w-full py-3 px-4 text-lg font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-lg transition-colors"
+                    >
+                      <Search className="h-5 w-5" />
+                      Search Games
+                    </button>
+                  </div>
+                </DrawerContent>
+              </Drawer>
             </div>
           </div>
         </div>
