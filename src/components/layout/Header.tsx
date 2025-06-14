@@ -39,7 +39,7 @@ const Header = () => {
 
   return (
     <>
-      <header className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-white/80 backdrop-blur-md shadow-md rounded-xl px-4 md:px-6 py-2 w-[95%] md:w-[98%] max-w-7xl mx-2 md:mx-0">
+      <header className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-white/80 backdrop-blur-md shadow-md rounded-xl px-4 md:px-6 py-2 w-[90%] md:w-[98%] max-w-7xl">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-2">
