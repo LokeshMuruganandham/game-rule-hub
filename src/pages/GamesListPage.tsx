@@ -175,11 +175,11 @@ const GamesListPage = () => {
       <Header />
       <main className="flex-1 pt-20">
         <div className="bg-muted/30 min-h-screen">
-          <div className="container py-6">
+          <div className="container py-6 px-4 md:px-6">
             {/* Compact Header */}
             <div className="mb-6">
-              <h1 className="text-3xl font-bold mb-2">All Games</h1>
-              <p className="text-muted-foreground">
+              <h1 className="text-2xl md:text-3xl font-bold mb-2">All Games</h1>
+              <p className="text-muted-foreground text-sm md:text-base">
                 Discover and learn the rules for your favorite board games
               </p>
             </div>
@@ -187,8 +187,8 @@ const GamesListPage = () => {
             {/* Compact Search and Filters Section */}
             <div className="mb-6 space-y-4">
               {/* Left-aligned Search Bar */}
-              <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-                <div className="relative w-full sm:w-96">
+              <div className="flex flex-col gap-4 items-start justify-between">
+                <div className="relative w-full md:w-96">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
                     type="text"
@@ -209,26 +209,27 @@ const GamesListPage = () => {
                     variant="outline" 
                     size="sm"
                     onClick={handleRequestGame}
-                    className="whitespace-nowrap"
+                    className="whitespace-nowrap w-full md:w-auto"
                   >
                     Request "{searchQuery}"
                   </Button>
                 )}
               </div>
 
-              {/* Compact Filters */}
-              <div className="bg-background border border-border rounded-lg p-4">
-                <div className="flex flex-wrap items-center gap-3">
+              {/* Mobile-optimized Filters */}
+              <div className="bg-background border border-border rounded-lg p-3 md:p-4">
+                <div className="flex flex-col gap-4">
                   <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
                     <Filter className="h-4 w-4" />
                     <span>Filters:</span>
                   </div>
                   
-                  <div className="flex flex-wrap gap-3 flex-1">
+                  {/* Mobile: Stack filters vertically, Desktop: Horizontal */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     {/* Player Count Filter */}
-                    <div className="min-w-[120px]">
+                    <div className="w-full">
                       <Select value={playerFilter} onValueChange={setPlayerFilter}>
-                        <SelectTrigger className="h-9 text-sm">
+                        <SelectTrigger className="h-9 text-sm w-full">
                           <SelectValue placeholder="Players" />
                         </SelectTrigger>
                         <SelectContent>
@@ -241,9 +242,9 @@ const GamesListPage = () => {
                     </div>
                     
                     {/* Complexity Filter */}
-                    <div className="min-w-[120px]">
+                    <div className="w-full">
                       <Select value={complexityFilter} onValueChange={setComplexityFilter}>
-                        <SelectTrigger className="h-9 text-sm">
+                        <SelectTrigger className="h-9 text-sm w-full">
                           <SelectValue placeholder="Complexity" />
                         </SelectTrigger>
                         <SelectContent>
@@ -258,9 +259,9 @@ const GamesListPage = () => {
                     </div>
                     
                     {/* Category Filter */}
-                    <div className="min-w-[120px]">
+                    <div className="w-full">
                       <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                        <SelectTrigger className="h-9 text-sm">
+                        <SelectTrigger className="h-9 text-sm w-full">
                           <SelectValue placeholder="Category" />
                         </SelectTrigger>
                         <SelectContent>
@@ -281,10 +282,10 @@ const GamesListPage = () => {
                       variant="ghost"
                       size="sm"
                       onClick={clearFilters}
-                      className="text-muted-foreground hover:text-foreground h-9"
+                      className="text-muted-foreground hover:text-foreground h-9 w-full md:w-auto self-start"
                     >
                       <X className="h-4 w-4 mr-1" />
-                      Clear all
+                      Clear all filters
                     </Button>
                   )}
                 </div>
@@ -311,10 +312,10 @@ const GamesListPage = () => {
               {/* Results Header */}
               <div className="flex justify-between items-center mb-4">
                 <div className="flex items-center gap-3">
-                  <h2 className="text-lg font-semibold">
+                  <h2 className="text-base md:text-lg font-semibold">
                     {searchQuery ? `Search Results` : `All Games`}
                   </h2>
-                  <span className="text-sm text-muted-foreground px-2 py-1 bg-muted rounded-full">
+                  <span className="text-xs md:text-sm text-muted-foreground px-2 py-1 bg-muted rounded-full">
                     {filteredGames.length} game{filteredGames.length !== 1 ? 's' : ''}
                   </span>
                 </div>
@@ -332,7 +333,7 @@ const GamesListPage = () => {
                   </Button>
                 </div>
               ) : filteredGames.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
                   {filteredGames.map((game) => (
                     <GameCard 
                       key={game.id} 

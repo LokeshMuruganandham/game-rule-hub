@@ -77,7 +77,7 @@ const GameDetailsPage = () => {
             alt={game.title}
             className="w-full h-full object-cover"
           />
-          <div className="container absolute inset-0 z-20 flex flex-col justify-end pb-8">
+          <div className="container absolute inset-0 z-20 flex flex-col justify-end pb-8 px-4 md:px-6">
             <div className="flex flex-wrap gap-2 mb-3">
               {game.categories.map((category) => (
                 <Link
@@ -89,8 +89,8 @@ const GameDetailsPage = () => {
                 </Link>
               ))}
             </div>
-            <div className="flex items-center justify-between">
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-2">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-white">
                 {game.title}
               </h1>
               <a
@@ -108,7 +108,7 @@ const GameDetailsPage = () => {
         </div>
 
         {/* Game info and rules */}
-        <div className="container py-8">
+        <div className="container py-8 px-4 md:px-6">
           <div className="md:hidden mb-6">
             <a
               href={getAffiliateLink(game.title)}
@@ -122,11 +122,11 @@ const GameDetailsPage = () => {
             </a>
           </div>
           
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
             {/* Left column - Game details */}
             <div className="lg:col-span-1">
-              <div className="bg-card rounded-lg border p-6 shadow-sm">
-                <h2 className="font-semibold text-xl mb-4">Game Details</h2>
+              <div className="bg-card rounded-lg border p-4 md:p-6 shadow-sm">
+                <h2 className="font-semibold text-lg md:text-xl mb-4">Game Details</h2>
                 
                 <div className="space-y-4">
                   <div>
@@ -192,7 +192,7 @@ const GameDetailsPage = () => {
                     <h3 className="text-sm font-medium text-muted-foreground mb-2">
                       Description
                     </h3>
-                    <p className="text-base">{game.description}</p>
+                    <p className="text-sm md:text-base">{game.description}</p>
                   </div>
                 </div>
               </div>
@@ -200,49 +200,69 @@ const GameDetailsPage = () => {
 
             {/* Right column - Game rules */}
             <div className="lg:col-span-2">
-              <Tabs defaultValue="summary">
-                <TabsList className="w-full border-b">
-                  <TabsTrigger value="summary" className="flex-1">Summary</TabsTrigger>
-                  <TabsTrigger value="setup" className="flex-1">Setup</TabsTrigger>
-                  <TabsTrigger value="how-to-play" className="flex-1">How to Play</TabsTrigger>
-                  <TabsTrigger value="full-rules" className="flex-1">Full Rules</TabsTrigger>
+              <Tabs defaultValue="summary" className="w-full">
+                <TabsList className="w-full h-auto p-1 bg-muted rounded-lg grid grid-cols-2 md:grid-cols-4 gap-1">
+                  <TabsTrigger 
+                    value="summary" 
+                    className="text-xs md:text-sm py-2 px-2 data-[state=active]:bg-background data-[state=active]:text-foreground rounded-md transition-all"
+                  >
+                    Summary
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="setup" 
+                    className="text-xs md:text-sm py-2 px-2 data-[state=active]:bg-background data-[state=active]:text-foreground rounded-md transition-all"
+                  >
+                    Setup
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="how-to-play" 
+                    className="text-xs md:text-sm py-2 px-2 data-[state=active]:bg-background data-[state=active]:text-foreground rounded-md transition-all"
+                  >
+                    How to Play
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="full-rules" 
+                    className="text-xs md:text-sm py-2 px-2 data-[state=active]:bg-background data-[state=active]:text-foreground rounded-md transition-all"
+                  >
+                    Full Rules
+                  </TabsTrigger>
                 </TabsList>
                 
-                <TabsContent value="summary" className="p-4">
+                <TabsContent value="summary" className="mt-4 p-4 bg-background rounded-lg border">
                   <div className="prose max-w-none">
-                    <h2 className="text-2xl font-bold mb-4">Game Summary</h2>
-                    <p className="text-lg mb-4">{game.rules.summary}</p>
+                    <h2 className="text-xl md:text-2xl font-bold mb-4">Game Summary</h2>
+                    <p className="text-base md:text-lg mb-4">{game.rules.summary}</p>
                   </div>
                 </TabsContent>
                 
-                <TabsContent value="setup" className="p-4">
+                <TabsContent value="setup" className="mt-4 p-4 bg-background rounded-lg border">
                   <div className="prose max-w-none">
-                    <h2 className="text-2xl font-bold mb-4">Game Setup</h2>
+                    <h2 className="text-xl md:text-2xl font-bold mb-4">Game Setup</h2>
                     <ol className="list-decimal pl-5 space-y-2">
                       {game.rules.setup.map((step, index) => (
-                        <li key={index} className="text-base">{step}</li>
+                        <li key={index} className="text-sm md:text-base">{step}</li>
                       ))}
                     </ol>
                   </div>
                 </TabsContent>
                 
-                <TabsContent value="how-to-play" className="p-4">
+                <TabsContent value="how-to-play" className="mt-4 p-4 bg-background rounded-lg border">
                   <div className="prose max-w-none">
-                    <h2 className="text-2xl font-bold mb-4">How to Play</h2>
+                    <h2 className="text-xl md:text-2xl font-bold mb-4">How to Play</h2>
                     <ol className="list-decimal pl-5 space-y-2">
                       {game.rules.howToPlay.map((step, index) => (
-                        <li key={index} className="text-base">{step}</li>
+                        <li key={index} className="text-sm md:text-base">{step}</li>
                       ))}
                     </ol>
                   </div>
                 </TabsContent>
                 
-                <TabsContent value="full-rules" className="p-4">
+                <TabsContent value="full-rules" className="mt-4 p-4 bg-background rounded-lg border">
                   <div className="prose max-w-none">
-                    <h2 className="text-2xl font-bold mb-4">Full Rules</h2>
+                    <h2 className="text-xl md:text-2xl font-bold mb-4">Full Rules</h2>
                     <ol className="list-decimal pl-5 space-y-2">
                       {game.rules.fullRules.map((rule, index) => (
-                        <li key={index} className="text-base">{rule}</li>
+                        <li key={index} className="text-sm md:text-base">{rule}</li>
                       ))}
                     </ol>
                   </div>
@@ -254,8 +274,8 @@ const GameDetailsPage = () => {
           {/* Similar games section */}
           {similarGames.length > 0 && (
             <div className="mt-12">
-              <h2 className="text-2xl font-bold mb-6">Similar Games</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              <h2 className="text-xl md:text-2xl font-bold mb-6">Similar Games</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
                 {similarGames.map((game) => (
                   <GameCard 
                     key={game.id} 

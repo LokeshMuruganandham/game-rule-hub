@@ -39,7 +39,7 @@ const Header = () => {
 
   return (
     <>
-      <header className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-white/80 backdrop-blur-md shadow-md rounded-xl px-6 py-2 w-[98%] max-w-7xl">
+      <header className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-white/80 backdrop-blur-md shadow-md rounded-xl px-4 md:px-6 py-2 w-[95%] md:w-[98%] max-w-7xl mx-2 md:mx-0">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-2">
@@ -53,7 +53,7 @@ const Header = () => {
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  className="h-6 w-6 text-primary-foreground"
+                  className="h-5 w-5 md:h-6 md:w-6 text-primary-foreground"
                 >
                   <rect width="18" height="18" x="3" y="3" rx="2" />
                   <path d="M9 9h.01" />
@@ -62,7 +62,7 @@ const Header = () => {
                   <path d="M9 15h.01" />
                 </svg>
               </div>
-              <span className="font-bold text-xl text-gray-800">GameRuleHub</span>
+              <span className="font-bold text-lg md:text-xl text-gray-800">GameRuleHub</span>
             </Link>
           </div>
 
@@ -80,7 +80,7 @@ const Header = () => {
           </nav>
 
           {/* Search Icon and Mobile Menu */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 md:gap-4">
             {/* Expandable Search Icon */}
             <button
               onClick={() => setIsSearchOpen(true)}
