@@ -27,19 +27,19 @@ import { useCreateGameRequest } from "@/hooks/useGameRequests";
 
 const formSchema = z.object({
   gameName: z.string().min(2, {
-    message: "Game name must be at least 2 characters.",
+    message: "Game name is required and must be at least 2 characters long. Please enter the full name of the board game.",
   }),
   description: z.string().min(10, {
-    message: "Description must be at least 10 characters.",
+    message: "Description is required and must be at least 10 characters long. Please provide more details about the game, its theme, and main mechanics.",
   }),
   priority: z.string({
-    required_error: "Please select priority level.",
+    required_error: "Please select a priority level for your request. This helps us understand how urgently you need this game added.",
   }),
   yourName: z.string().min(2, {
-    message: "Name must be at least 2 characters.",
+    message: "Your name is required and must be at least 2 characters long. Please enter your full name so we can contact you.",
   }),
   email: z.string().email({
-    message: "Please enter a valid email address.",
+    message: "Please enter a valid email address (e.g., john@example.com). We'll use this to notify you when the game is added.",
   }),
 });
 
@@ -128,7 +128,7 @@ const GameRequestForm = ({ initialGameName = "" }: GameRequestFormProps) => {
                   <FormControl>
                     <Input placeholder="e.g., Wingspan, Azul, Gloomhaven" {...field} />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="text-red-600 bg-red-50 border border-red-200 rounded-md p-2 mt-2" />
                 </FormItem>
               )}
             />
@@ -149,7 +149,7 @@ const GameRequestForm = ({ initialGameName = "" }: GameRequestFormProps) => {
                   <FormDescription>
                     Help us understand what makes this game special.
                   </FormDescription>
-                  <FormMessage />
+                  <FormMessage className="text-red-600 bg-red-50 border border-red-200 rounded-md p-2 mt-2" />
                 </FormItem>
               )}
             />
@@ -172,7 +172,7 @@ const GameRequestForm = ({ initialGameName = "" }: GameRequestFormProps) => {
                       <SelectItem value="high">High - Need it urgently</SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormMessage />
+                  <FormMessage className="text-red-600 bg-red-50 border border-red-200 rounded-md p-2 mt-2" />
                 </FormItem>
               )}
             />
@@ -192,7 +192,7 @@ const GameRequestForm = ({ initialGameName = "" }: GameRequestFormProps) => {
                     <FormControl>
                       <Input placeholder="John Doe" {...field} />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage className="text-red-600 bg-red-50 border border-red-200 rounded-md p-2 mt-2" />
                   </FormItem>
                 )}
               />
@@ -209,7 +209,7 @@ const GameRequestForm = ({ initialGameName = "" }: GameRequestFormProps) => {
                     <FormDescription>
                       We'll contact you when the game is added.
                     </FormDescription>
-                    <FormMessage />
+                    <FormMessage className="text-red-600 bg-red-50 border border-red-200 rounded-md p-2 mt-2" />
                   </FormItem>
                 )}
               />
