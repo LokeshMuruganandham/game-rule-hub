@@ -1,5 +1,5 @@
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -13,6 +13,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -24,6 +31,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 import { useCreateGameRequest } from "@/hooks/useGameRequests";
+import { AlertCircle } from "lucide-react";
 
 const formSchema = z.object({
   gameName: z.string().min(2, {
@@ -51,6 +59,8 @@ interface GameRequestFormProps {
 
 const GameRequestForm = ({ initialGameName = "" }: GameRequestFormProps) => {
   const createGameRequest = useCreateGameRequest();
+  const [showErrorDialog, setShowErrorDialog] = useState(false);
+  const [formErrors, setFormErrors] = useState<string[]>([]);
   
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -103,6 +113,22 @@ const GameRequestForm = ({ initialGameName = "" }: GameRequestFormProps) => {
     });
   }
 
+  const handleInvalidSubmit = () => {
+    const errors = form.formState.errors;
+    const errorMessages: string[] = [];
+    
+    if (errors.gameName) errorMessages.push(errors.gameName.message || "Game name is required");
+    if (errors.description) errorMessages.push(errors.description.message || "Description is required");
+    if (errors.priority) errorMessages.push(errors.priority.message || "Priority is required");
+    if (errors.yourName) errorMessages.push(errors.yourName.message || "Your name is required");
+    if (errors.email) errorMessages.push(errors.email.message || "Valid email is required");
+    
+    if (errorMessages.length > 0) {
+      setFormErrors(errorMessages);
+      setShowErrorDialog(true);
+    }
+  };
+
   return (
     <div className="bg-card p-6 rounded-lg border">
       {initialGameName && (
@@ -114,7 +140,7 @@ const GameRequestForm = ({ initialGameName = "" }: GameRequestFormProps) => {
       )}
       
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit, handleInvalidSubmit)} className="space-y-6">
           {/* Game Information Section */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Game Information</h3>
@@ -128,7 +154,6 @@ const GameRequestForm = ({ initialGameName = "" }: GameRequestFormProps) => {
                   <FormControl>
                     <Input placeholder="e.g., Wingspan, Azul, Gloomhaven" {...field} />
                   </FormControl>
-                  <FormMessage className="text-red-600 bg-red-50 border border-red-200 rounded-md p-2 mt-2" />
                 </FormItem>
               )}
             />
@@ -149,7 +174,6 @@ const GameRequestForm = ({ initialGameName = "" }: GameRequestFormProps) => {
                   <FormDescription>
                     Help us understand what makes this game special.
                   </FormDescription>
-                  <FormMessage className="text-red-600 bg-red-50 border border-red-200 rounded-md p-2 mt-2" />
                 </FormItem>
               )}
             />
@@ -172,7 +196,6 @@ const GameRequestForm = ({ initialGameName = "" }: GameRequestFormProps) => {
                       <SelectItem value="high">High - Need it urgently</SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormMessage className="text-red-600 bg-red-50 border border-red-200 rounded-md p-2 mt-2" />
                 </FormItem>
               )}
             />
@@ -192,7 +215,6 @@ const GameRequestForm = ({ initialGameName = "" }: GameRequestFormProps) => {
                     <FormControl>
                       <Input placeholder="John Doe" {...field} />
                     </FormControl>
-                    <FormMessage className="text-red-600 bg-red-50 border border-red-200 rounded-md p-2 mt-2" />
                   </FormItem>
                 )}
               />
@@ -209,7 +231,6 @@ const GameRequestForm = ({ initialGameName = "" }: GameRequestFormProps) => {
                     <FormDescription>
                       We'll contact you when the game is added.
                     </FormDescription>
-                    <FormMessage className="text-red-600 bg-red-50 border border-red-200 rounded-md p-2 mt-2" />
                   </FormItem>
                 )}
               />
@@ -225,6 +246,34 @@ const GameRequestForm = ({ initialGameName = "" }: GameRequestFormProps) => {
           </Button>
         </form>
       </Form>
+
+      {/* Error Dialog */}
+      <Dialog open={showErrorDialog} onOpenChange={setShowErrorDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-red-600">
+              <AlertCircle className="h-5 w-5" />
+              Please Fix These Issues
+            </DialogTitle>
+            <DialogDescription className="text-left">
+              Please correct the following errors before submitting:
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2">
+            {formErrors.map((error, index) => (
+              <div key={index} className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-md">
+                <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0" />
+                <p className="text-sm text-red-800">{error}</p>
+              </div>
+            ))}
+          </div>
+          <div className="flex justify-end">
+            <Button onClick={() => setShowErrorDialog(false)}>
+              Got it
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
