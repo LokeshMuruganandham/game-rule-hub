@@ -72,7 +72,7 @@ const GameInformationSection = ({ control }: GameInformationSectionProps) => {
             <Select onValueChange={field.onChange} value={field.value}>
               <FormControl>
                 <SelectTrigger>
-                  <SelectValue placeholder="How urgent is this request? (Default: Low)" />
+                  <SelectValue placeholder="How urgent is this request?" />
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
