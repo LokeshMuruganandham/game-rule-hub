@@ -4,26 +4,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Form } from "@/components/ui/form";
 import { toast } from "@/hooks/use-toast";
 import { useCreateGameRequest } from "@/hooks/useGameRequests";
+import RequestBanner from "./RequestBanner";
+import GameInformationSection from "./GameInformationSection";
+import ContactInformationSection from "./ContactInformationSection";
 
 const formSchema = z.object({
   gameName: z.string().min(2, {
@@ -105,116 +91,12 @@ const GameRequestForm = ({ initialGameName = "" }: GameRequestFormProps) => {
 
   return (
     <div className="bg-card p-6 rounded-lg border">
-      {initialGameName && (
-        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-          <p className="text-blue-800 text-sm">
-            <strong>Requesting:</strong> {initialGameName}
-          </p>
-        </div>
-      )}
+      {initialGameName && <RequestBanner gameName={initialGameName} />}
       
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          {/* Game Information Section */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Game Information</h3>
-            
-            <FormField
-              control={form.control}
-              name="gameName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Game Name *</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g., Wingspan, Azul, Gloomhaven" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Game Description *</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Briefly describe what the game is about, its theme, and main mechanics..."
-                      className="min-h-[100px]"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Help us understand what makes this game special.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="priority"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Request Priority *</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="How urgent is this request?" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="low">Low - Would be nice to have</SelectItem>
-                      <SelectItem value="medium">Medium - Planning to play soon</SelectItem>
-                      <SelectItem value="high">High - Need it urgently</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          {/* Contact Information Section */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Your Information</h3>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="yourName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Your Name *</FormLabel>
-                    <FormControl>
-                      <Input placeholder="John Doe" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email Address *</FormLabel>
-                    <FormControl>
-                      <Input placeholder="john@example.com" type="email" {...field} />
-                    </FormControl>
-                    <FormDescription>
-                      We'll contact you when the game is added.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </div>
+          <GameInformationSection control={form.control} />
+          <ContactInformationSection control={form.control} />
 
           <Button 
             type="submit" 
