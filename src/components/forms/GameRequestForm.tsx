@@ -18,9 +18,7 @@ const formSchema = z.object({
   description: z.string().min(10, {
     message: "Description must be at least 10 characters.",
   }),
-  priority: z.string({
-    required_error: "Please select priority level.",
-  }),
+  priority: z.string().optional(),
   yourName: z.string().min(2, {
     message: "Name must be at least 2 characters.",
   }),
@@ -43,7 +41,7 @@ const GameRequestForm = ({ initialGameName = "" }: GameRequestFormProps) => {
     defaultValues: {
       gameName: initialGameName,
       description: "",
-      priority: "",
+      priority: "low",
       yourName: "",
       email: "",
     },
@@ -61,11 +59,11 @@ const GameRequestForm = ({ initialGameName = "" }: GameRequestFormProps) => {
   function onSubmit(values: FormData) {
     console.log("Game request form submitted:", values);
     
-    // Ensure all required fields are present
+    // Ensure all required fields are present and set default priority if not provided
     const requestData = {
       gameName: values.gameName,
       description: values.description,
-      priority: values.priority,
+      priority: values.priority || "low",
       yourName: values.yourName,
       email: values.email
     };

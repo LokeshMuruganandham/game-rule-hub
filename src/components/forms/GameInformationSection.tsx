@@ -68,11 +68,11 @@ const GameInformationSection = ({ control }: GameInformationSectionProps) => {
         name="priority"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Request Priority *</FormLabel>
+            <FormLabel>Request Priority</FormLabel>
             <Select onValueChange={field.onChange} value={field.value}>
               <FormControl>
                 <SelectTrigger>
-                  <SelectValue placeholder="How urgent is this request?" />
+                  <SelectValue placeholder="How urgent is this request? (Default: Low)" />
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
@@ -81,6 +81,9 @@ const GameInformationSection = ({ control }: GameInformationSectionProps) => {
                 <SelectItem value="high">High - Need it urgently</SelectItem>
               </SelectContent>
             </Select>
+            <FormDescription>
+              If not selected, priority will default to "Low".
+            </FormDescription>
             <FormMessage />
           </FormItem>
         )}
