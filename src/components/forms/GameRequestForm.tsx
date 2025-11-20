@@ -14,16 +14,24 @@ import ContactInformationSection from "./ContactInformationSection";
 const formSchema = z.object({
   gameName: z.string().min(2, {
     message: "Game name must be at least 2 characters.",
+  }).max(200, {
+    message: "Game name must be less than 200 characters.",
   }),
   description: z.string().min(10, {
     message: "Description must be at least 10 characters.",
+  }).max(2000, {
+    message: "Description must be less than 2000 characters.",
   }),
   priority: z.string().optional(),
   yourName: z.string().min(2, {
     message: "Name must be at least 2 characters.",
+  }).max(100, {
+    message: "Name must be less than 100 characters.",
   }),
   email: z.string().email({
     message: "Please enter a valid email address.",
+  }).max(255, {
+    message: "Email must be less than 255 characters.",
   }),
 });
 
