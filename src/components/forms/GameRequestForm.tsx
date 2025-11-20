@@ -57,7 +57,7 @@ const GameRequestForm = ({ initialGameName = "" }: GameRequestFormProps) => {
   }, [initialGameName, form]);
 
   function onSubmit(values: FormData) {
-    console.log("Game request form submitted:", values);
+    console.log("Game request form submission started");
     
     // Ensure all required fields are present and set default priority if not provided
     const requestData = {

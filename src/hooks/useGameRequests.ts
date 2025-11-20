@@ -15,7 +15,7 @@ export const useCreateGameRequest = () => {
 
   return useMutation({
     mutationFn: async (data: GameRequestData) => {
-      console.log('Submitting game request:', data);
+      console.log('Game request submission initiated');
       
       const { error } = await supabase
         .from('game_requests')
