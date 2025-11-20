@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ScrollToTop from "@/components/ui/ScrollToTop";
+import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import GamesListPage from "./pages/GamesListPage";
@@ -12,6 +13,8 @@ import GameDetailsPage from "./pages/GameDetailsPage";
 import CategoriesListPage from "./pages/CategoriesListPage";
 import CategoryPage from "./pages/CategoryPage";
 import ContactPage from "./pages/ContactPage";
+import AuthPage from "./pages/AuthPage";
+import AdminDashboard from "./pages/AdminDashboard";
 
 // Create query client outside of component to prevent recreation
 const queryClient = new QueryClient({
@@ -26,22 +29,26 @@ const queryClient = new QueryClient({
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <ScrollToTop />
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/games" element={<GamesListPage />} />
-            <Route path="/games/:id" element={<GameDetailsPage />} />
-            <Route path="/categories" element={<CategoriesListPage />} />
-            <Route path="/categories/:id" element={<CategoryPage />} />
-            <Route path="/contact" element={<ContactPage />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <ScrollToTop />
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/games" element={<GamesListPage />} />
+              <Route path="/games/:id" element={<GameDetailsPage />} />
+              <Route path="/categories" element={<CategoriesListPage />} />
+              <Route path="/categories/:id" element={<CategoryPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/auth" element={<AuthPage />} />
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 };
