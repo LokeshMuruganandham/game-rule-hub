@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ScrollToTop from "@/components/ui/ScrollToTop";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { useAnalyticsTracking } from "@/hooks/useAnalytics";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import GamesListPage from "./pages/GamesListPage";
@@ -15,6 +16,7 @@ import CategoryPage from "./pages/CategoryPage";
 import ContactPage from "./pages/ContactPage";
 import AuthPage from "./pages/AuthPage";
 import AdminDashboard from "./pages/AdminDashboard";
+import AnalyticsDashboard from "./pages/AnalyticsDashboard";
 
 // Create query client outside of component to prevent recreation
 const queryClient = new QueryClient({
@@ -26,6 +28,12 @@ const queryClient = new QueryClient({
   },
 });
 
+// Analytics wrapper component
+const AnalyticsWrapper = ({ children }: { children: React.ReactNode }) => {
+  useAnalyticsTracking();
+  return <>{children}</>;
+};
+
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
@@ -34,18 +42,21 @@ const App = () => {
           <Toaster />
           <Sonner />
           <BrowserRouter>
-            <ScrollToTop />
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/games" element={<GamesListPage />} />
-              <Route path="/games/:id" element={<GameDetailsPage />} />
-              <Route path="/categories" element={<CategoriesListPage />} />
-              <Route path="/categories/:id" element={<CategoryPage />} />
-              <Route path="/contact" element={<ContactPage />} />
-              <Route path="/auth" element={<AuthPage />} />
-              <Route path="/admin" element={<AdminDashboard />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            <AnalyticsWrapper>
+              <ScrollToTop />
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/games" element={<GamesListPage />} />
+                <Route path="/games/:id" element={<GameDetailsPage />} />
+                <Route path="/categories" element={<CategoriesListPage />} />
+                <Route path="/categories/:id" element={<CategoryPage />} />
+                <Route path="/contact" element={<ContactPage />} />
+                <Route path="/auth" element={<AuthPage />} />
+                <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/admin/analytics" element={<AnalyticsDashboard />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </AnalyticsWrapper>
           </BrowserRouter>
         </TooltipProvider>
       </AuthProvider>
