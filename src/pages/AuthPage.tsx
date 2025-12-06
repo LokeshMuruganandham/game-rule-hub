@@ -8,14 +8,14 @@ import { toast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import { Shield } from 'lucide-react';
 
 const AuthPage = () => {
-  const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { signIn, signUp, user } = useAuth();
+  const { signIn, user } = useAuth();
 
   useEffect(() => {
     if (user) {
@@ -28,9 +28,7 @@ const AuthPage = () => {
     setLoading(true);
 
     try {
-      const { error } = isLogin 
-        ? await signIn(email, password)
-        : await signUp(email, password);
+      const { error } = await signIn(email, password);
 
       if (error) {
         if (error.message.includes('Invalid login credentials')) {
@@ -39,10 +37,10 @@ const AuthPage = () => {
             description: 'Invalid email or password. Please check your credentials.',
             variant: 'destructive',
           });
-        } else if (error.message.includes('User already registered')) {
+        } else if (error.message.includes('Email not confirmed')) {
           toast({
-            title: 'Error',
-            description: 'This email is already registered. Please sign in instead.',
+            title: 'Email Not Confirmed',
+            description: 'Please check your email and confirm your account before signing in.',
             variant: 'destructive',
           });
         } else {
@@ -53,18 +51,11 @@ const AuthPage = () => {
           });
         }
       } else {
-        if (isLogin) {
-          toast({
-            title: 'Success',
-            description: 'Signed in successfully!',
-          });
-          navigate('/admin');
-        } else {
-          toast({
-            title: 'Success',
-            description: 'Account created! Please check your email to confirm.',
-          });
-        }
+        toast({
+          title: 'Success',
+          description: 'Signed in successfully!',
+        });
+        navigate('/admin');
       }
     } catch (error) {
       toast({
@@ -82,12 +73,13 @@ const AuthPage = () => {
       <Header />
       <main className="flex-1 flex items-center justify-center p-4">
         <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle>{isLogin ? 'Admin Sign In' : 'Create Admin Account'}</CardTitle>
+          <CardHeader className="text-center">
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+              <Shield className="h-6 w-6 text-primary" />
+            </div>
+            <CardTitle>Admin Sign In</CardTitle>
             <CardDescription>
-              {isLogin 
-                ? 'Sign in to access the admin dashboard' 
-                : 'Create a new admin account'}
+              Sign in to access the admin dashboard
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -116,18 +108,12 @@ const AuthPage = () => {
                 />
               </div>
               <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? 'Processing...' : isLogin ? 'Sign In' : 'Sign Up'}
+                {loading ? 'Signing in...' : 'Sign In'}
               </Button>
             </form>
-            <div className="mt-4 text-center text-sm">
-              <button
-                type="button"
-                onClick={() => setIsLogin(!isLogin)}
-                className="text-primary hover:underline"
-              >
-                {isLogin ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
-              </button>
-            </div>
+            <p className="mt-4 text-center text-xs text-muted-foreground">
+              Admin accounts are created by system administrators only.
+            </p>
           </CardContent>
         </Card>
       </main>
