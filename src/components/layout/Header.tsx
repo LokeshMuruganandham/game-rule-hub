@@ -1,19 +1,21 @@
 
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Search, X, Menu } from "lucide-react";
+import { Search, X, Menu, Shield } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger, DrawerClose } from "@/components/ui/drawer";
 import { useGames } from "@/hooks/useGames";
 import { smartSearchGames } from "@/lib/smartSearch";
 import SearchResults from "@/components/search/SearchResults";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Header = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const { data: games = [] } = useGames();
+  const { isAdmin } = useAuth();
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,6 +79,12 @@ const Header = () => {
             <Link to="/categories" className="font-medium text-gray-700 hover:text-primary transition-colors">
               Categories
             </Link>
+            {isAdmin && (
+              <Link to="/admin" className="flex items-center gap-1 font-medium text-primary hover:text-primary/80 transition-colors">
+                <Shield className="h-4 w-4" />
+                Admin
+              </Link>
+            )}
           </nav>
 
           {/* Search Icon and Mobile Menu */}
@@ -124,6 +132,16 @@ const Header = () => {
                     >
                       Categories
                     </Link>
+                    {isAdmin && (
+                      <Link 
+                        to="/admin" 
+                        className="flex items-center gap-3 py-3 px-4 text-lg font-medium text-primary hover:text-primary/80 hover:bg-gray-50 rounded-lg transition-colors"
+                        onClick={handleMobileNavClick}
+                      >
+                        <Shield className="h-5 w-5" />
+                        Admin Dashboard
+                      </Link>
+                    )}
                     <button
                       onClick={() => {
                         setIsMobileMenuOpen(false);
