@@ -1,8 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 
-// Generate or retrieve session ID
+// Generate or retrieve session ID (persists across page refreshes in same tab)
 const getSessionId = (): string => {
   let sessionId = sessionStorage.getItem('analytics_session_id');
   if (!sessionId) {
@@ -12,14 +12,44 @@ const getSessionId = (): string => {
   return sessionId;
 };
 
+// Track which paths have been tracked in this session to prevent duplicates
+const getTrackedPaths = (): Set<string> => {
+  const stored = sessionStorage.getItem('analytics_tracked_paths');
+  return stored ? new Set(JSON.parse(stored)) : new Set();
+};
+
+const addTrackedPath = (path: string) => {
+  const tracked = getTrackedPaths();
+  tracked.add(path);
+  sessionStorage.setItem('analytics_tracked_paths', JSON.stringify([...tracked]));
+};
+
+const hasTrackedPath = (path: string): boolean => {
+  return getTrackedPaths().has(path);
+};
+
+// Debounce tracking to prevent rapid-fire duplicates
+let lastTrackTime = 0;
+const DEBOUNCE_MS = 2000; // 2 second debounce
+
 export const useAnalyticsTracking = () => {
   const location = useLocation();
-  const lastPathRef = useRef<string>('');
 
   useEffect(() => {
-    // Avoid duplicate tracking for same path
-    if (lastPathRef.current === location.pathname) return;
-    lastPathRef.current = location.pathname;
+    const now = Date.now();
+    
+    // Debounce: don't track if last track was less than 2 seconds ago
+    if (now - lastTrackTime < DEBOUNCE_MS) {
+      return;
+    }
+
+    // Skip if this exact path was already tracked in this session
+    if (hasTrackedPath(location.pathname)) {
+      return;
+    }
+
+    lastTrackTime = now;
+    addTrackedPath(location.pathname);
 
     const trackPageView = async () => {
       try {
@@ -63,21 +93,32 @@ export const useAnalyticsData = () => {
     if (!data || data.length === 0) {
       return {
         totalPageViews: 0,
-        uniqueSessions: 0,
+        uniqueVisitors: 0,
         topPages: [],
         viewsByDay: [],
       };
     }
 
-    // Total page views
-    const totalPageViews = data.length;
-
-    // Unique sessions
-    const uniqueSessions = new Set(data.map(d => d.session_id)).size;
-
-    // Top pages
-    const pageCount: Record<string, number> = {};
+    // Deduplicate: count unique session + page combinations
+    const uniquePageViews = new Map<string, typeof data[0]>();
     data.forEach(d => {
+      const key = `${d.session_id}-${d.page_path}`;
+      if (!uniquePageViews.has(key)) {
+        uniquePageViews.set(key, d);
+      }
+    });
+
+    const deduplicatedData = Array.from(uniquePageViews.values());
+
+    // Total unique page views (deduplicated)
+    const totalPageViews = deduplicatedData.length;
+
+    // Unique visitors (sessions)
+    const uniqueVisitors = new Set(deduplicatedData.map(d => d.session_id)).size;
+
+    // Top pages (deduplicated counts)
+    const pageCount: Record<string, number> = {};
+    deduplicatedData.forEach(d => {
       pageCount[d.page_path] = (pageCount[d.page_path] || 0) + 1;
     });
     const topPages = Object.entries(pageCount)
@@ -85,9 +126,9 @@ export const useAnalyticsData = () => {
       .sort((a, b) => b.count - a.count)
       .slice(0, 10);
 
-    // Views by day
+    // Views by day (deduplicated)
     const dayCount: Record<string, number> = {};
-    data.forEach(d => {
+    deduplicatedData.forEach(d => {
       const day = new Date(d.created_at).toLocaleDateString();
       dayCount[day] = (dayCount[day] || 0) + 1;
     });
@@ -97,7 +138,7 @@ export const useAnalyticsData = () => {
 
     return {
       totalPageViews,
-      uniqueSessions,
+      uniqueVisitors,
       topPages,
       viewsByDay,
     };
