@@ -8,14 +8,23 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { Eye, Users, TrendingUp, ArrowLeft, RefreshCw } from 'lucide-react';
+import { Eye, Users, TrendingUp, ArrowLeft, RefreshCw, Timer, LogOut } from 'lucide-react';
 
 interface AnalyticsStats {
   totalPageViews: number;
   uniqueVisitors: number;
+  bounceRate: number;
+  avgSessionDuration: number;
   topPages: { path: string; count: number }[];
   viewsByDay: { date: string; count: number }[];
 }
+
+const formatDuration = (seconds: number): string => {
+  if (seconds < 60) return `${Math.round(seconds)}s`;
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.round(seconds % 60);
+  return `${mins}m ${secs}s`;
+};
 
 const AnalyticsDashboard = () => {
   const { user, isAdmin, loading: authLoading } = useAuth();
@@ -95,7 +104,7 @@ const AnalyticsDashboard = () => {
           </div>
 
           {/* Stats Cards */}
-          <div className="mb-8 grid gap-4 md:grid-cols-3">
+          <div className="mb-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Total Page Views</CardTitle>
@@ -121,24 +130,37 @@ const AnalyticsDashboard = () => {
                   {loading ? '...' : stats?.uniqueVisitors.toLocaleString()}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Distinct visitors
+                  Distinct sessions
                 </p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Avg. Views per Session</CardTitle>
-                <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-sm font-medium">Bounce Rate</CardTitle>
+                <LogOut className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
-                  {loading || !stats || stats.uniqueVisitors === 0
-                    ? '...'
-                    : (stats.totalPageViews / stats.uniqueVisitors).toFixed(1)}
+                  {loading ? '...' : `${stats?.bounceRate.toFixed(1)}%`}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Pages per visitor
+                  Single page visits
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Avg. Session Duration</CardTitle>
+                <Timer className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {loading ? '...' : formatDuration(stats?.avgSessionDuration || 0)}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Time on site
                 </p>
               </CardContent>
             </Card>
